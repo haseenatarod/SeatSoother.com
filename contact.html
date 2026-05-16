@@ -14,7 +14,7 @@
 
 <!-- ═══ ANNOUNCEMENT BAR ═══ -->
 <div class="ann-bar">
-  EOFY Sale &nbsp;&mdash;&nbsp; Up to 40% OFF &nbsp;&middot;&nbsp; Free Shipping on All Orders
+  EOFY Sale &nbsp;&mdash;&nbsp; 30% OFF &nbsp;&middot;&nbsp; Free Shipping on All Orders
 </div>
 
 <!-- ═══ NAVBAR ═══ -->
@@ -52,9 +52,15 @@
   <a href="shop.html" class="btn btn-blue mobile-link" style="margin-top:10px;font-size:1.4rem;padding:16px 44px;">Shop Now</a>
 </div>
 
+<!-- ═══ SIDE WIDGET ═══ -->
+<div class="side-widget" id="sideWidget">
+  <button class="side-widget-close" id="sideWidgetClose" aria-label="Close">&times;</button>
+  <span class="side-widget-text">Get 30% Off</span>
+</div>
+
 <!-- ═══ COUNTDOWN ═══ -->
 <div class="cd-banner">
-  <span class="cd-label">EOFY Sale Ends In</span>
+  <span class="cd-label">Sale Ends In</span>
   <div class="cd-timer">
     <div>
       <span class="cd-unit" id="cd-h">04</span>
@@ -74,47 +80,41 @@
 </div>
 
 <!-- ═══ BREADCRUMB ═══ -->
-<div class="breadcrumb-bar">
-  <div class="container">
-    <nav class="breadcrumb">
-      <a href="index.html">Home</a>
-      <span class="sep">&rsaquo;</span>
-      Contact
-    </nav>
-  </div>
+<div class="breadcrumb-bar contact-breadcrumb-bar">
+  <nav class="breadcrumb">
+    <a href="index.html">Home</a>
+    <span class="sep">&rsaquo;</span>
+    Contact
+  </nav>
 </div>
 
 <!-- ═══ CONTACT FORM ═══ -->
-<section class="section contact-section">
-  <div class="container">
-    <h1 class="contact-title fade-up">Contact Form</h1>
+<section class="contact-section">
+  <h1 class="contact-title fade-up">Contact Form</h1>
 
-    <div class="contact-form fade-up">
-      <div class="form-row">
-        <div class="form-field">
-          <input type="text" placeholder="Enter your name" id="contactName" autocomplete="name" />
-        </div>
-        <div class="form-field">
-          <input type="email" placeholder="Enter your email" id="contactEmail" autocomplete="email" />
-        </div>
+  <div class="contact-form fade-up">
+    <div class="form-row">
+      <div class="form-field">
+        <input type="text" placeholder="Enter your name" id="contactName" autocomplete="name" />
       </div>
       <div class="form-field">
-        <input type="tel" placeholder="Enter your phone number" id="contactPhone" autocomplete="tel" />
-      </div>
-      <div class="form-field">
-        <textarea placeholder="Enter your message" id="contactMessage"></textarea>
-      </div>
-      <div class="form-submit">
-        <button class="btn btn-blue" id="submitBtn" style="font-size:1.15rem;padding:15px 64px;" type="button">
-          Submit
-        </button>
+        <input type="email" placeholder="Enter your email" id="contactEmail" autocomplete="email" />
       </div>
     </div>
+    <div class="form-field">
+      <input type="tel" placeholder="Enter your phone number" id="contactPhone" autocomplete="tel" />
+    </div>
+    <div class="form-field">
+      <textarea placeholder="Enter your message" id="contactMessage"></textarea>
+    </div>
+    <div class="form-submit">
+      <button class="btn contact-submit-btn" id="submitBtn" type="button">Submit</button>
+    </div>
+  </div>
 
-    <div class="contact-info fade-up">
-      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="vertical-align:middle;margin-right:6px;color:#4285F4;"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
-      Email: <a href="mailto:contact@seatsoothers.com">contact@seatsoothers.com</a>
-    </div>
+  <div class="contact-info fade-up">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="4" width="20" height="16" rx="2"/><polyline points="22,6 12,13 2,6"/></svg>
+    Email:&nbsp;<a href="mailto:contact@seatsoothers.com">contact@seatsoothers.com</a>
   </div>
 </section>
 
@@ -211,6 +211,11 @@
   document.getElementById('mobileClose').addEventListener('click', function () { document.getElementById('mobileNav').classList.remove('active'); });
   document.querySelectorAll('.mobile-link').forEach(function (l) { l.addEventListener('click', function () { document.getElementById('mobileNav').classList.remove('active'); }); });
 
+  /* ── Side widget dismiss ── */
+  document.getElementById('sideWidgetClose').addEventListener('click', function () {
+    document.getElementById('sideWidget').style.display = 'none';
+  });
+
   document.getElementById('submitBtn').addEventListener('click', function () {
     var name = document.getElementById('contactName').value.trim();
     var email = document.getElementById('contactEmail').value.trim();
@@ -238,5 +243,6 @@
   document.querySelectorAll('.fade-up').forEach(function (el) { observer.observe(el); });
 })();
 </script>
+<script src="cart.js"></script>
 </body>
 </html>

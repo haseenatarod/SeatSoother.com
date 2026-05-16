@@ -477,6 +477,7 @@
   <button class="btn btn-blue" id="stickyCartBtn" style="font-size:1.15rem;">Order Now &mdash; $189.99</button>
 </div>
 
+<script src="cart.js"></script>
 <script>
 (function () {
   'use strict';
@@ -507,6 +508,7 @@
   function applyColor(key) {
     var p = PRODUCTS[key];
     currentProduct = p;
+    colorKey = key;
     document.getElementById('mainProductImg').src = p.img;
     document.getElementById('mainProductImg').alt = p.alt;
     document.getElementById('thumb0').src = p.img;
@@ -540,18 +542,10 @@
   });
 
   /* ── Cart ── */
-  var badge = document.getElementById('cartCount');
-  badge.textContent = localStorage.getItem('ss_cart') || '0';
-
   function addToCart(btn) {
-    var count = parseInt(localStorage.getItem('ss_cart') || '0', 10) + 1;
-    localStorage.setItem('ss_cart', count.toString());
-    badge.textContent = count;
-    var orig = btn.innerHTML;
-    btn.innerHTML = '&#10003; Added to Cart!';
-    btn.style.background = '#27ae60';
-    btn.style.borderColor = '#27ae60';
-    setTimeout(function () { btn.innerHTML = orig; btn.style.background = ''; btn.style.borderColor = ''; }, 2000);
+    if (window.SS && window.SS.addToCart) {
+      window.SS.addToCart(currentProduct.cartName, colorKey, btn);
+    }
   }
 
   document.getElementById('addCartBtn').addEventListener('click', function () { addToCart(this); });
