@@ -277,7 +277,11 @@
           localStorage.setItem('ss_cart', '0');
           updateBadges();
           closeDrawer();
-          window.location.href = 'thank-you.html';
+          if (window.SS && window.SS.navigate) {
+            window.SS.navigate('thankyou');
+          } else {
+            window.location.href = 'thank-you.html';
+          }
         });
       },
       onError: function (err) {
