@@ -8,47 +8,1311 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-  <script src="site-config.js"></script>
   <style>
-    .spa-page { display: none; }
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    /* Thank-you page */
-    .ty-section {
-      min-height: calc(100vh - 112px);
-      display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center; padding: 80px 24px;
-    }
-    .ty-icon {
-      width: 80px; height: 80px; border-radius: 50%;
-      background: #e9f7ef;
-      display: flex; align-items: center; justify-content: center;
-      margin: 0 auto 32px;
-    }
-    .ty-icon svg { color: #27ae60; }
-    .ty-title {
-      font-family: var(--font);
-      font-size: clamp(3.2rem, 5vw, 5.5rem);
-      font-weight: 900; text-transform: uppercase;
-      color: var(--dark-blue); line-height: 1.05; margin-bottom: 20px;
-    }
-    .ty-title span { color: var(--blue); }
-    .ty-sub {
-      font-size: 1.5rem; color: var(--muted);
-      max-width: 500px; margin: 0 auto 36px; line-height: 1.6;
-    }
-    .ty-details {
-      display: flex; gap: 24px; flex-wrap: wrap;
-      justify-content: center; margin-bottom: 44px;
-    }
-    .ty-detail {
-      display: flex; align-items: center; gap: 8px;
-      font-family: var(--mono); font-size: 1.1rem;
-      color: var(--dark-blue); font-weight: 600;
-    }
-    .ty-detail svg { color: var(--blue); }
+/* ── COLOR SWATCHES ── */
+.color-row { display: flex; align-items: center; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+.color-row-label { font-family: var(--mono); font-size: 1rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); margin-right: 4px; }
+.swatch { width: 32px; height: 32px; border-radius: 50%; border: 2.5px solid transparent; cursor: pointer; transition: transform .2s; outline: 2.5px solid transparent; outline-offset: 3px; flex-shrink: 0; }
+.swatch.active { outline-color: var(--blue); }
+.swatch:hover { transform: scale(1.12); }
+.swatch-black { background: #111; }
+.swatch-navy  { background: var(--dark-blue); }
+.color-selected-name { font-family: var(--mono); font-size: 1.15rem; color: var(--dark-blue); font-weight: 600; }
+
+:root {
+  --blue:      #4285F4;
+  --dark-blue: #0A1F3D;
+  --white:     #F5F5F0;
+  --black:     #000000;
+  --grey:      #ebecf0;
+  --blue-dim:  rgba(66,133,244,.1);
+  --blue-mid:  rgba(66,133,244,.3);
+  --muted:     #555555;
+  --border:    rgba(0,0,0,.1);
+  --border-b:  rgba(66,133,244,.28);
+  --font:      'Montserrat', sans-serif;
+  --mono:      'Roboto Mono', monospace;
+}
+
+html { scroll-behavior: smooth; font-size: 10px; }
+body {
+  background: var(--white);
+  color: var(--black);
+  font-family: var(--font);
+  font-size: 1.5rem;
+  font-weight: 400;
+  line-height: 1.65;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+a { color: inherit; text-decoration: none; transition: opacity .2s; }
+img { display: block; max-width: 100%; }
+ul { list-style: none; }
+
+/* ── ANNOUNCEMENT BAR ── */
+.ann-bar {
+  background: var(--dark-blue);
+  color: var(--white);
+  text-align: center;
+  padding: 9px 16px;
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+
+/* ── NAVBAR ── */
+.navbar {
+  background: var(--white);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 500;
+}
+.navbar-inner {
+  max-width: 1360px;
+  margin: 0 auto;
+  padding: 0 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+.nav-logo { display: flex; align-items: center; gap: 10px; min-width: 180px; }
+.nav-logo img { height: 47px; width: auto; animation: logo-glow 2.5s ease-in-out infinite; }
+.nav-logo-text {
+  font-family: var(--font);
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--dark-blue);
+}
+.nav-links {
+  display: flex;
+  gap: 44px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+}
+.nav-links a {
+  font-family: var(--mono);
+  font-size: 1.05rem;
+  font-weight: 500;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  color: var(--muted);
+  transition: color .2s;
+}
+.nav-links a:hover, .nav-links a.active { color: var(--dark-blue); opacity: 1; }
+.nav-actions { display: flex; align-items: center; gap: 16px; min-width: 180px; justify-content: flex-end; }
+.nav-cart {
+  width: 38px; height: 38px;
+  border: 1.5px solid var(--border-b);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--blue);
+  position: relative;
+  transition: border-color .2s;
+}
+.nav-cart:hover { border-color: var(--blue); opacity: 1; }
+.nav-cart-badge {
+  position: absolute; top: -5px; right: -5px;
+  background: var(--blue);
+  color: var(--white);
+  font-size: .8rem; font-weight: 700;
+  width: 17px; height: 17px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+}
+.hamburger { display: none; flex-direction: column; gap: 5px; background: none; border: none; padding: 4px; cursor: pointer; }
+.hamburger span { width: 22px; height: 1.5px; background: var(--dark-blue); border-radius: 2px; display: block; }
+
+/* ── LOGO GLOW ANIMATION ── */
+@keyframes logo-glow {
+  0%, 100% {
+    filter: hue-rotate(25deg) saturate(0.75) brightness(1.05)
+            drop-shadow(0 0 5px rgba(66, 133, 244, 0.7))
+            drop-shadow(0 0 12px rgba(66, 133, 244, 0.35));
+  }
+  50% {
+    filter: hue-rotate(25deg) saturate(0.75) brightness(1.05)
+            drop-shadow(0 0 12px rgba(66, 133, 244, 1))
+            drop-shadow(0 0 28px rgba(66, 133, 244, 0.75))
+            drop-shadow(0 0 48px rgba(66, 133, 244, 0.4));
+  }
+}
+
+/* ── BUTTON GLOW ANIMATION ── */
+@keyframes btn-glow {
+  0%, 100% {
+    box-shadow: 0 0 8px rgba(66, 133, 244, 0.55),
+                0 0 20px rgba(66, 133, 244, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 16px rgba(66, 133, 244, 0.9),
+                0 0 36px rgba(66, 133, 244, 0.5),
+                0 0 56px rgba(66, 133, 244, 0.2);
+  }
+}
+
+/* ── COUNTDOWN ── */
+.cd-banner {
+  background: var(--dark-blue);
+  color: var(--white);
+  padding: 10px 16px;
+  display: flex; align-items: center; justify-content: center;
+  gap: 16px;
+  font-family: var(--mono);
+  font-size: 1.1rem;
+  font-weight: 600;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+}
+.cd-label { color: rgba(245,245,240,.6); font-weight: 500; }
+.cd-timer { display: flex; align-items: center; gap: 5px; }
+.cd-unit {
+  background: rgba(255,255,255,.1);
+  border: 1px solid rgba(66,133,244,.5);
+  border-radius: 4px;
+  padding: 5px 10px;
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: #fff;
+  min-width: 36px;
+  text-align: center;
+}
+.cd-sep { color: rgba(255,255,255,.5); }
+.cd-unit-label { font-size: .8rem; font-weight: 400; letter-spacing: .14em; color: rgba(245,245,240,.5); text-align: center; margin-top: 2px; }
+
+/* ── HERO ── */
+.hero {
+  display: flex;
+  height: calc(100vh - 112px);
+  min-height: 540px;
+  max-height: 900px;
+  overflow: hidden;
+  position: relative;
+  background: var(--white);
+}
+.hero-left {
+  width: 42%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 72px 64px 72px 80px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 2;
+}
+.hero-side-tab {
+  position: absolute;
+  left: 0; top: 50%;
+  transform: translateY(-50%) rotate(-90deg) translateX(-50%);
+  transform-origin: left center;
+  background: var(--dark-blue);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: .85rem;
+  font-weight: 600;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  padding: 8px 22px;
+  white-space: nowrap;
+  z-index: 10;
+}
+.hero-title {
+  font-family: var(--font);
+  font-size: clamp(3.6rem, 4.5vw, 7rem);
+  font-weight: 900;
+  line-height: 1.0;
+  letter-spacing: .01em;
+  text-transform: uppercase;
+  color: var(--dark-blue);
+  margin-bottom: 44px;
+}
+.hero-cta { font-size: 1.15rem; padding: 15px 38px; }
+.hero-right {
+  flex: 1;
+  background: var(--grey);
+  display: flex; align-items: center; justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+.hero-product-img {
+  width: 78%;
+  max-width: 560px;
+  object-fit: contain;
+  filter: drop-shadow(0 32px 64px rgba(0,0,0,.1));
+}
+
+/* ── HERO CAROUSEL ── */
+.hero-carousel { background: #111; }
+.carousel-slides {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.carousel-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transition: opacity 0.9s ease;
+}
+.carousel-slide.active { opacity: 1; }
+.carousel-slide img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+.carousel-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,.58) 0%, rgba(0,0,0,.22) 52%, rgba(0,0,0,0) 100%);
+  z-index: 1;
+  pointer-events: none;
+}
+.hero-carousel .hero-left {
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  width: 50%;
+}
+.hero-carousel .hero-title { color: #fff; }
+.hero-carousel .hero-cta { box-shadow: 0 4px 24px rgba(0,0,0,.25); }
+.carousel-prev,
+.carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  background: rgba(255,255,255,.14);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1.5px solid rgba(255,255,255,.35);
+  border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #fff;
+  transition: background .2s;
+  padding: 0;
+}
+.carousel-prev:hover,
+.carousel-next:hover { background: rgba(255,255,255,.28); }
+.carousel-prev { left: 22px; }
+.carousel-next { right: 22px; }
+.carousel-dots {
+  position: absolute;
+  bottom: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  display: flex;
+  gap: 10px;
+}
+.carousel-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid rgba(255,255,255,.7);
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+  transition: background .25s, border-color .25s, transform .25s;
+}
+.carousel-dot.active {
+  background: #fff;
+  border-color: #fff;
+  transform: scale(1.25);
+}
+
+.stars { color: var(--blue); letter-spacing: 2px; font-size: 1.2rem; }
+
+/* ── BUTTONS ── */
+.btn {
+  font-family: var(--font);
+  font-size: 1.1rem;
+  font-weight: 700;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  padding: 14px 32px;
+  cursor: pointer;
+  display: inline-flex; align-items: center; gap: 9px;
+  border: 1.5px solid transparent;
+  transition: all .22s ease;
+  white-space: nowrap;
+}
+.btn-blue { background: var(--blue); color: var(--white); border-color: var(--blue); animation: btn-glow 2.5s ease-in-out infinite; }
+.btn-blue:hover { background: #3373e3; border-color: #3373e3; opacity: 1; }
+.btn-outline-blue { background: transparent; color: var(--blue); border-color: var(--blue); }
+.btn-outline-blue:hover { background: var(--blue-dim); opacity: 1; }
+.btn-dark { background: var(--dark-blue); color: var(--white); border-color: var(--dark-blue); }
+.btn-dark:hover { background: #0d2a52; border-color: #0d2a52; opacity: 1; }
+.btn-outline-dark { background: transparent; color: var(--dark-blue); border-color: rgba(10,31,61,.3); }
+.btn-outline-dark:hover { border-color: var(--dark-blue); opacity: 1; }
+
+/* ── TRUST MARQUEE ── */
+.trust-bar {
+  background: var(--grey);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  padding: 14px 0;
+}
+.trust-track { display: flex; animation: marquee 34s linear infinite; white-space: nowrap; }
+.trust-track:hover { animation-play-state: paused; }
+@keyframes marquee { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+.trust-item {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 0 44px;
+  font-family: var(--mono); font-size: 1.05rem; font-weight: 500;
+  letter-spacing: .14em; text-transform: uppercase;
+  color: var(--muted);
+  border-right: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.trust-icon {
+  width: 26px; height: 26px;
+  background: var(--blue-dim);
+  border: 1px solid var(--border-b);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--blue); font-size: 1.1rem; flex-shrink: 0;
+}
+
+/* ── HELPERS ── */
+.container { max-width: 1240px; margin: 0 auto; padding: 0 52px; }
+.section { padding: 110px 0; }
+.section-eyebrow {
+  font-family: var(--mono);
+  font-size: 1rem; font-weight: 500;
+  letter-spacing: .26em; text-transform: uppercase;
+  color: var(--blue); margin-bottom: 14px;
+}
+.section-title {
+  font-family: var(--font);
+  font-size: clamp(3rem, 4vw, 5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .02em;
+  line-height: 1.04;
+  color: var(--dark-blue);
+}
+.section-title span { color: var(--blue); }
+.section-header { text-align: center; margin-bottom: 72px; }
+
+/* ── ANATOMY / FEATURES ── */
+.anatomy-section { background: var(--grey); }
+.anatomy-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.anatomy-img-wrap {
+  position: relative;
+  border: 1px solid var(--border);
+  background: var(--white);
+  padding: 10px;
+}
+.anatomy-img-wrap img { width: 100%; }
+.anatomy-img-wrap::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, rgba(66,133,244,.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.anatomy-features { display: flex; flex-direction: column; gap: 28px; }
+.anat-feat {
+  display: flex; gap: 18px; align-items: flex-start;
+  padding: 24px;
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--blue);
+  transition: background .25s;
+}
+.anat-feat:hover { background: var(--grey); }
+.anat-num { font-family: var(--mono); font-size: 2.2rem; font-weight: 600; color: var(--blue); line-height: 1; flex-shrink: 0; }
+.anat-feat h3 { font-size: 1.4rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--dark-blue); margin-bottom: 6px; }
+.anat-feat p { font-size: 1.3rem; color: var(--muted); line-height: 1.75; }
+
+/* ── USE CASES ── */
+.use-cases-section { background: var(--white); }
+.use-cases-img-wrap { position: relative; border: 1px solid var(--border); overflow: hidden; }
+.use-cases-img-wrap img { width: 100%; }
+.use-cases-img-wrap::before {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(to bottom, transparent 60%, rgba(10,31,61,.55) 100%);
+  z-index: 1;
+}
+.use-cases-caption {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 2;
+  padding: 28px 36px;
+  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px;
+}
+.use-cases-caption p { font-family: var(--mono); font-size: 1.1rem; color: var(--white); letter-spacing: .12em; text-transform: uppercase; }
+.use-tag { background: var(--blue-dim); border: 1px solid var(--border-b); color: var(--blue); font-family: var(--mono); font-size: 1rem; font-weight: 500; padding: 6px 14px; letter-spacing: .1em; text-transform: uppercase; }
+.use-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 2px; margin-top: 2px; }
+.use-card { background: var(--grey); border: 1px solid var(--border); padding: 36px 28px; text-align: center; transition: background .25s; }
+.use-card:hover { background: var(--white); }
+.use-card-icon { width: 56px; height: 56px; border: 1.5px solid var(--border-b); border-radius: 50%; background: var(--blue-dim); display: flex; align-items: center; justify-content: center; color: var(--blue); font-size: 2.2rem; margin: 0 auto 18px; }
+.use-card h3 { font-size: 1.4rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--dark-blue); margin-bottom: 8px; }
+.use-card p { font-size: 1.3rem; color: var(--muted); line-height: 1.75; }
+
+/* ── HOW TO USE ── */
+.how-section { background: var(--grey); }
+.how-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.how-img-wrap { position: relative; background: var(--white); border: 1px solid var(--border); padding: 10px; }
+.how-img-wrap img { width: 100%; }
+.how-steps { display: flex; flex-direction: column; gap: 24px; }
+.how-step { display: flex; gap: 20px; align-items: flex-start; padding: 22px 24px; border: 1px solid var(--border); background: var(--white); }
+.how-step-num { font-family: var(--mono); font-size: 1.6rem; font-weight: 600; color: var(--blue); flex-shrink: 0; width: 32px; }
+.how-step h3 { font-size: 1.4rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--dark-blue); margin-bottom: 6px; }
+.how-step p { font-size: 1.3rem; color: var(--muted); line-height: 1.75; }
+.how-warning { display: flex; gap: 16px; align-items: flex-start; padding: 20px 22px; background: rgba(220,50,50,.06); border: 1px solid rgba(220,50,50,.18); margin-top: 8px; }
+.how-warning-icon { font-size: 2rem; flex-shrink: 0; line-height: 1; }
+.how-warning p { font-size: 1.25rem; color: rgba(180,40,40,.9); line-height: 1.7; }
+
+/* ── PRODUCT SECTION ── */
+.product-section { background: var(--white); }
+.product-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.product-gallery { display: flex; flex-direction: column; gap: 12px; }
+.product-main-img { background: var(--grey); border: 1px solid var(--border); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; cursor: zoom-in; }
+.product-main-img::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at center, rgba(66,133,244,.09) 0%, transparent 65%); pointer-events: none; }
+.product-main-img img { width: 82%; position: relative; z-index: 1; transition: transform .5s ease; }
+.product-main-img:hover img { transform: scale(1.05); }
+.product-thumbs { display: flex; gap: 10px; }
+.product-thumb { flex: 1; background: var(--grey); border: 1.5px solid var(--border); aspect-ratio: 1; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: border-color .2s; padding: 10px; }
+.product-thumb.active { border-color: var(--blue); }
+.product-thumb:hover { border-color: var(--blue-mid); }
+.product-thumb img { width: 100%; }
+.prod-eyebrow { font-family: var(--mono); font-size: 1rem; font-weight: 500; letter-spacing: .24em; text-transform: uppercase; color: var(--blue); margin-bottom: 12px; }
+.prod-title { font-family: var(--font); font-size: clamp(2.8rem, 3.4vw, 4.8rem); font-weight: 900; text-transform: uppercase; letter-spacing: .02em; line-height: 1.05; color: var(--dark-blue); margin-bottom: 16px; }
+.prod-rating { display: flex; align-items: center; gap: 10px; margin-bottom: 22px; font-family: var(--mono); font-size: 1.2rem; color: var(--muted); }
+.prod-desc { font-size: 1.4rem; color: var(--muted); line-height: 1.82; margin-bottom: 28px; }
+.prod-price { display: flex; align-items: baseline; gap: 14px; margin-bottom: 24px; }
+.price-now { font-family: var(--font); font-size: 3.6rem; font-weight: 900; color: var(--dark-blue); }
+.price-was { font-size: 1.8rem; color: rgba(0,0,0,.28); text-decoration: line-through; }
+.price-save { background: var(--blue); color: var(--white); font-family: var(--mono); font-size: .95rem; font-weight: 700; padding: 4px 10px; letter-spacing: .08em; }
+.qty-row { display: flex; align-items: center; gap: 16px; margin-bottom: 26px; }
+.qty-label { font-family: var(--mono); font-size: 1rem; letter-spacing: .16em; text-transform: uppercase; color: var(--muted); }
+.qty-control { display: flex; align-items: center; border: 1px solid var(--border-b); }
+.qty-btn { width: 40px; height: 40px; background: none; border: none; color: var(--blue); font-size: 2.2rem; font-weight: 300; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background .2s; }
+.qty-btn:hover { background: var(--blue-dim); }
+.qty-val { width: 52px; text-align: center; font-family: var(--mono); font-size: 1.6rem; font-weight: 600; color: var(--dark-blue); border: none; background: none; border-left: 1px solid var(--border-b); border-right: 1px solid var(--border-b); }
+.prod-feats { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+.prod-feat { display: flex; align-items: flex-start; gap: 12px; font-size: 1.35rem; color: var(--muted); }
+.prod-feat-check { width: 20px; height: 20px; border-radius: 50%; background: var(--blue-dim); border: 1px solid var(--border-b); display: flex; align-items: center; justify-content: center; color: var(--blue); font-size: 1rem; flex-shrink: 0; margin-top: 2px; }
+.prod-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
+/* ── REVIEWS ── */
+.reviews-section { background: var(--grey); }
+.reviews-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 48px; }
+.review-card { background: var(--white); border: 1px solid var(--border); border-top: 2px solid var(--blue); padding: 32px 28px; display: flex; flex-direction: column; gap: 16px; transition: box-shadow .2s; }
+.review-card:hover { box-shadow: 0 6px 24px rgba(66,133,244,.1); }
+.review-stars { font-size: 1.3rem; letter-spacing: 2px; color: var(--blue); }
+.review-text { font-size: 1.35rem; color: var(--muted); line-height: 1.82; font-style: italic; flex: 1; }
+.review-author { display: flex; align-items: center; gap: 13px; }
+.review-av { width: 42px; height: 42px; background: var(--blue-dim); border: 1px solid var(--border-b); border-radius: 50%; color: var(--blue); display: flex; align-items: center; justify-content: center; font-family: var(--mono); font-size: 1.1rem; font-weight: 600; flex-shrink: 0; }
+.review-name { font-size: 1.2rem; font-weight: 700; text-transform: uppercase; letter-spacing: .06em; color: var(--dark-blue); }
+.review-role { font-family: var(--mono); font-size: 1.1rem; color: var(--muted); margin-top: 2px; }
+.review-stats { display: grid; grid-template-columns: repeat(3, 1fr); border: 1px solid var(--border); background: var(--white); }
+.rev-stat { text-align: center; padding: 38px; border-right: 1px solid var(--border); }
+.rev-stat:last-child { border-right: none; }
+.rev-stat-num { font-family: var(--font); font-size: 4.8rem; font-weight: 900; display: block; line-height: 1; margin-bottom: 8px; color: var(--blue); }
+.rev-stat-lbl { font-family: var(--mono); font-size: 1rem; color: var(--muted); letter-spacing: .14em; text-transform: uppercase; }
+
+/* ── FAQ ── */
+.faq-section { background: var(--white); }
+.faq-list { max-width: 760px; margin: 0 auto; }
+.faq-item { border-bottom: 1px solid var(--border); }
+.faq-q { display: flex; align-items: center; justify-content: space-between; padding: 22px 0; cursor: pointer; font-size: 1.45rem; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--dark-blue); gap: 18px; user-select: none; transition: color .2s; }
+.faq-q:hover { color: var(--blue); }
+.faq-toggle { width: 30px; height: 30px; border: 1.5px solid var(--border-b); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.6rem; font-weight: 300; color: var(--blue); flex-shrink: 0; transition: all .3s; }
+.faq-item.open .faq-toggle { background: var(--blue); color: var(--white); border-color: var(--blue); transform: rotate(45deg); }
+.faq-a { max-height: 0; overflow: hidden; transition: max-height .38s ease; }
+.faq-a-inner { padding: 0 0 22px; font-size: 1.35rem; color: var(--muted); line-height: 1.82; max-width: 620px; }
+.faq-item.open .faq-a { max-height: 320px; }
+
+/* ── CTA ── */
+.cta-section { background: var(--dark-blue); text-align: center; border-top: 1px solid rgba(66,133,244,.2); }
+.cta-eyebrow { font-family: var(--mono); font-size: 1.05rem; letter-spacing: .24em; text-transform: uppercase; color: var(--blue); margin-bottom: 18px; }
+.cta-title { font-family: var(--font); font-size: clamp(3.6rem, 6vw, 7.2rem); font-weight: 900; text-transform: uppercase; letter-spacing: .02em; line-height: 1.03; color: var(--white); margin-bottom: 20px; }
+.cta-title span { color: var(--blue); }
+.cta-sub { font-size: 1.5rem; color: rgba(245,245,240,.6); max-width: 480px; margin: 0 auto 44px; line-height: 1.8; }
+.cta-actions { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
+.cta-guarantee { margin-top: 24px; font-family: var(--mono); font-size: 1rem; color: rgba(245,245,240,.28); letter-spacing: .12em; text-transform: uppercase; }
+
+/* ── FOOTER ── */
+footer { background: var(--grey); border-top: 1px solid var(--border); padding: 64px 0 28px; }
+.footer-inner { max-width: 1240px; margin: 0 auto; padding: 0 52px; }
+.footer-grid { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr; gap: 52px; margin-bottom: 52px; }
+.footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+.footer-logo img { height: 42px; animation: logo-glow 2.5s ease-in-out infinite; }
+.footer-logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--dark-blue); }
+.footer-desc { font-size: 1.25rem; color: var(--muted); line-height: 1.75; max-width: 260px; margin-bottom: 18px; }
+.footer-email { font-family: var(--mono); font-size: 1.2rem; color: var(--blue); }
+.footer-col-title { font-family: var(--mono); font-size: 1.05rem; font-weight: 600; letter-spacing: .18em; text-transform: uppercase; margin-bottom: 16px; color: var(--dark-blue); }
+.footer-col-links { display: flex; flex-direction: column; gap: 12px; }
+.footer-col-links a { font-size: 1.25rem; color: var(--muted); }
+.footer-col-links a:hover { color: var(--blue); opacity: 1; }
+.footer-bottom { border-top: 1px solid var(--border); padding-top: 24px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.footer-copy { font-family: var(--mono); font-size: 1.1rem; color: var(--muted); }
+.footer-socials { display: flex; gap: 8px; }
+.social-btn { width: 34px; height: 34px; background: var(--white); border: 1px solid var(--border); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: var(--muted); transition: all .2s; }
+.social-btn:hover { border-color: var(--blue); color: var(--blue); opacity: 1; }
+.payment-icons { display: flex; gap: 6px; align-items: center; flex-wrap: wrap; }
+.payment-icon { background: var(--white); border: 1px solid var(--border); border-radius: 4px; padding: 4px 9px; font-family: var(--mono); font-size: .78rem; font-weight: 700; color: var(--muted); letter-spacing: .04em; display: inline-flex; align-items: center; }
+.pi-apple-pay { background: #000; color: #fff; font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif; font-size: .78rem; font-weight: 500; letter-spacing: -.01em; border-color: #000; padding: 4px 8px; }
+.pi-visa { color: #1A1F71; font-style: italic; font-weight: 900; font-size: .88rem; font-family: 'Helvetica Neue', Arial, sans-serif; letter-spacing: .02em; }
+.pi-mastercard { padding: 1px 5px; }
+.pi-afterpay { background: #b2fce4; color: #000; font-weight: 800; font-size: .72rem; letter-spacing: -.02em; border-color: #b2fce4; font-family: var(--font); }
+.pi-paypal { color: #003087; font-weight: 700; font-size: .78rem; font-family: var(--font); letter-spacing: 0; }
+
+/* ── BREADCRUMB ── */
+.breadcrumb-bar { background: var(--grey); border-bottom: 1px solid var(--border); padding: 14px 0; }
+.breadcrumb { font-family: var(--mono); font-size: 1.1rem; color: var(--muted); }
+.breadcrumb a { color: var(--muted); }
+.breadcrumb a:hover { color: var(--blue); opacity: 1; }
+.breadcrumb .sep { margin: 0 10px; }
+
+/* ── SHOP GRID ── */
+.shop-section { background: var(--white); }
+.shop-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.shop-card { background: var(--white); border: 1px solid var(--border); overflow: hidden; transition: box-shadow .25s, transform .25s; cursor: pointer; }
+.shop-card:hover { box-shadow: 0 8px 32px rgba(66,133,244,.13); transform: translateY(-3px); }
+.shop-card-img { position: relative; background: var(--grey); overflow: hidden; }
+.shop-card-img img { width: 100%; aspect-ratio: 1; object-fit: cover; transition: transform .4s ease; }
+.shop-card:hover .shop-card-img img { transform: scale(1.04); }
+.discount-badge { position: absolute; top: 12px; left: 12px; background: var(--blue); color: var(--white); font-family: var(--mono); font-size: 1rem; font-weight: 700; padding: 4px 10px; letter-spacing: .04em; }
+.shop-card-body { padding: 20px 22px 22px; }
+.shop-card-name { font-family: var(--font); font-size: 1.4rem; font-weight: 700; text-transform: uppercase; letter-spacing: .05em; color: var(--dark-blue); margin-bottom: 10px; }
+.shop-card-price { display: flex; align-items: baseline; gap: 10px; }
+.shop-price-now { font-family: var(--font); font-size: 1.9rem; font-weight: 800; color: var(--dark-blue); }
+.shop-price-was { font-size: 1.4rem; color: rgba(0,0,0,.32); text-decoration: line-through; }
+.shop-card-btn { display: block; width: 100%; margin-top: 14px; padding: 12px; background: var(--dark-blue); color: var(--white); font-family: var(--font); font-size: 1.1rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; text-align: center; border: none; cursor: pointer; transition: background .2s; }
+.shop-card-btn:hover { background: var(--blue); }
+
+/* ── ABOUT PAGE ── */
+.about-section {
+  background: var(--white);
+  min-height: calc(100vh - 160px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 100px 52px;
+}
+.about-side-tab {
+  position: fixed;
+  left: 0; top: 50%;
+  transform: translateY(-50%) rotate(-90deg) translateX(-50%);
+  transform-origin: left center;
+  background: var(--dark-blue);
+  color: var(--white);
+  font-family: var(--mono);
+  font-size: .85rem;
+  font-weight: 600;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  padding: 8px 22px;
+  white-space: nowrap;
+  z-index: 10;
+}
+.about-body { max-width: 740px; width: 100%; text-align: center; }
+.about-title {
+  font-family: var(--font);
+  font-size: clamp(4.8rem, 7vw, 9rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--dark-blue);
+  margin-bottom: 52px;
+  text-align: center;
+}
+.about-text {
+  font-size: 1.5rem;
+  color: var(--muted);
+  line-height: 2;
+  margin-bottom: 22px;
+  text-align: left;
+}
+.about-email {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--mono);
+  font-size: 1.25rem;
+  color: var(--muted);
+  margin-top: 52px;
+  justify-content: center;
+}
+.about-email a { color: var(--muted); }
+.about-email a:hover { color: var(--blue); opacity: 1; }
+
+/* ── CONTACT PAGE ── */
+.contact-breadcrumb-bar { text-align: center; border-bottom: none; background: var(--white); }
+.contact-section {
+  background: var(--white);
+  padding: 64px 52px 100px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.contact-title {
+  font-family: var(--font);
+  font-size: clamp(3rem, 4.5vw, 5rem);
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: .04em;
+  color: var(--dark-blue);
+  margin-bottom: 52px;
+  text-align: center;
+}
+.contact-form { max-width: 740px; width: 100%; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+.form-field { margin-bottom: 16px; }
+.form-field input, .form-field textarea {
+  width: 100%;
+  background: var(--white);
+  border: 1.5px solid var(--border);
+  padding: 14px 18px;
+  font-family: var(--font); font-size: 1.35rem;
+  color: var(--dark-blue);
+  outline: none;
+  transition: border-color .2s;
+  border-radius: 4px;
+}
+.form-field input:focus, .form-field textarea:focus { border-color: var(--blue); }
+.form-field input::placeholder, .form-field textarea::placeholder { color: #bbb; }
+.form-field textarea { min-height: 160px; resize: vertical; }
+.form-submit { display: flex; justify-content: center; margin-top: 20px; }
+.contact-submit-btn {
+  background: var(--blue);
+  color: var(--white);
+  border: none;
+  border-radius: 100px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: .14em;
+  text-transform: uppercase;
+  padding: 16px 72px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.contact-submit-btn:hover { background: #3373e3; opacity: 1; }
+.contact-info {
+  text-align: center;
+  margin-top: 64px;
+  font-family: var(--mono);
+  font-size: 1.25rem;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.contact-info a { color: var(--muted); }
+.contact-info a:hover { color: var(--blue); opacity: 1; }
+
+/* ── SIDE WIDGET ── */
+.side-widget {
+  position: fixed;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--dark-blue);
+  color: var(--white);
+  width: 38px;
+  padding: 14px 0 18px;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  border-radius: 0 4px 4px 0;
+  box-shadow: 2px 0 12px rgba(0,0,0,.15);
+}
+.side-widget-close {
+  background: none;
+  border: none;
+  color: rgba(255,255,255,.5);
+  font-size: 1.4rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+  transition: color .2s;
+}
+.side-widget-close:hover { color: var(--white); }
+.side-widget-text {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
+  transform: rotate(180deg);
+  font-family: var(--mono);
+  font-size: .82rem;
+  font-weight: 600;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+/* ── DIVIDER ── */
+.blue-divider { height: 1px; background: linear-gradient(to right, transparent, var(--blue-mid), transparent); }
+
+/* ── FADE ANIMATIONS ── */
+.fade-up { opacity: 0; transform: translateY(28px); transition: opacity .7s cubic-bezier(0,0,.3,1), transform .7s cubic-bezier(0,0,.3,1); }
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+/* ── MOBILE NAV ── */
+.mobile-nav { display: none; position: fixed; inset: 0; background: var(--white); z-index: 999; flex-direction: column; align-items: center; justify-content: center; gap: 28px; }
+.mobile-nav.active { display: flex; }
+.mobile-nav a { font-size: 2.2rem; font-weight: 800; text-transform: uppercase; letter-spacing: .07em; color: var(--dark-blue); }
+.mobile-nav a:hover { color: var(--blue); opacity: 1; }
+.mobile-close { position: absolute; top: 26px; right: 30px; font-size: 3rem; color: var(--muted); cursor: pointer; background: none; border: none; line-height: 1; }
+
+/* ── STICKY MOBILE CTA ── */
+.sticky-cta { display: none; position: fixed; bottom: 0; left: 0; right: 0; z-index: 400; padding: 12px 16px; background: var(--white); border-top: 1px solid var(--border-b); gap: 10px; align-items: center; }
+.sticky-cta .btn { flex: 1; justify-content: center; }
+
+/* ── COLLECTION PAGE ── */
+.coll-header { background: var(--white); padding: 72px 0 52px; border-bottom: 1px solid var(--border); text-align: center; }
+.coll-title { font-family: var(--font); font-size: clamp(3.4rem, 5vw, 6.8rem); font-weight: 900; text-transform: uppercase; letter-spacing: .03em; line-height: 1.04; color: var(--dark-blue); margin-bottom: 16px; }
+.coll-title span { color: var(--blue); }
+.coll-sub { font-family: var(--mono); font-size: 1.15rem; color: var(--muted); letter-spacing: .16em; text-transform: uppercase; }
+.coll-section { background: var(--grey); padding: 72px 0 120px; }
+.coll-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+.coll-card { display: flex; flex-direction: column; background: var(--white); border: 1px solid var(--border); overflow: hidden; transition: box-shadow .3s, transform .3s; cursor: pointer; }
+.coll-card:hover { box-shadow: 0 14px 52px rgba(66,133,244,.14); transform: translateY(-5px); opacity: 1; }
+.coll-card-img { position: relative; background: var(--grey); overflow: hidden; }
+.coll-card-img img { width: 100%; aspect-ratio: 4 / 5; object-fit: contain; padding: 24px; transition: transform .5s ease; display: block; }
+.coll-card:hover .coll-card-img img { transform: scale(1.04); }
+.coll-badge { position: absolute; top: 16px; left: 16px; background: var(--blue); color: var(--white); font-family: var(--mono); font-size: 1.05rem; font-weight: 700; padding: 5px 12px; letter-spacing: .06em; }
+.coll-card-body { padding: 28px 32px 36px; display: flex; flex-direction: column; gap: 12px; border-top: 1px solid var(--border); }
+.coll-card-eyebrow { font-family: var(--mono); font-size: .95rem; font-weight: 500; letter-spacing: .22em; text-transform: uppercase; color: var(--blue); }
+.coll-card-name { font-family: var(--font); font-size: clamp(2rem, 2.4vw, 3rem); font-weight: 900; text-transform: uppercase; letter-spacing: .03em; color: var(--dark-blue); line-height: 1.1; }
+.coll-card-stars { display: flex; align-items: center; gap: 8px; }
+.coll-stars-glyphs { color: var(--blue); letter-spacing: 2px; font-size: 1.3rem; }
+.coll-card-stars span { font-family: var(--mono); font-size: 1.1rem; color: var(--muted); }
+.coll-card-price { display: flex; align-items: baseline; gap: 12px; }
+.coll-price-now { font-family: var(--font); font-size: 2.8rem; font-weight: 900; color: var(--dark-blue); }
+.coll-price-was { font-size: 1.6rem; color: rgba(0,0,0,.3); text-decoration: line-through; }
+.coll-card-cta { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 1rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: #fff; background: var(--blue); padding: 12px 22px; border-radius: 8px; width: fit-content; box-shadow: 0 0 14px rgba(59,130,246,.55), 0 0 30px rgba(59,130,246,.25); transition: gap .2s, box-shadow .2s, transform .15s; }
+.coll-card:hover .coll-card-cta { gap: 14px; box-shadow: 0 0 22px rgba(59,130,246,.8), 0 0 50px rgba(59,130,246,.4); transform: translateY(-1px); }
+
+/* ── PRODUCT PAGE EXTRAS ── */
+.prod-stock { font-family: var(--mono); font-size: 1.05rem; color: #c0392b; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; display: flex; align-items: center; gap: 8px; margin-bottom: 16px; }
+.prod-stock::before { content: ''; width: 8px; height: 8px; background: #c0392b; border-radius: 50%; display: inline-block; flex-shrink: 0; }
+.prod-guarantee { display: flex; gap: 18px; flex-wrap: wrap; margin-top: 20px; padding-top: 20px; border-top: 1px solid var(--border); }
+.prod-guar-item { display: flex; align-items: center; gap: 7px; font-family: var(--mono); font-size: 1rem; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
+.prod-guar-item svg { color: var(--blue); flex-shrink: 0; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .hero:not(.hero-carousel) { height: auto; max-height: none; flex-direction: column; }
+  .hero:not(.hero-carousel) .hero-left { width: 100%; padding: 52px 44px; min-height: 280px; }
+  .hero-side-tab { display: none; }
+  .hero:not(.hero-carousel) .hero-right { min-height: 380px; }
+  .hero-carousel .hero-left { width: 100%; }
+  .anatomy-grid, .how-grid, .product-grid { grid-template-columns: 1fr; gap: 52px; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 36px; }
+  .shop-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  html { font-size: 9px; }
+  .nav-links { display: none; }
+  .hamburger { display: flex; }
+  .ann-bar { font-size: 1rem; padding: 8px 12px; line-height: 1.6; }
+  .cd-banner { flex-wrap: wrap; gap: 8px; padding: 10px 16px; justify-content: center; }
+  .cd-label { width: 100%; text-align: center; font-size: 1rem; }
+  .cd-unit { font-size: 1.3rem; min-width: 28px; padding: 4px 8px; }
+  .hero-left { padding: 36px 20px 32px; }
+  .hero-right { min-height: 260px; }
+  .hero-title { margin-bottom: 28px; }
+  .hero-product-img { width: 80%; }
+  .hero-carousel .hero-left { width: 100%; }
+  .carousel-overlay { background: linear-gradient(to bottom, rgba(0,0,0,.5) 0%, rgba(0,0,0,.15) 100%); }
+  .carousel-prev { left: 10px; }
+  .carousel-next { right: 10px; }
+  .carousel-prev, .carousel-next { width: 38px; height: 38px; }
+  .use-cards { grid-template-columns: 1fr; }
+  .reviews-grid { grid-template-columns: 1fr; }
+  .review-stats { grid-template-columns: 1fr; }
+  .rev-stat { border-right: none; border-bottom: 1px solid var(--border); }
+  .rev-stat:last-child { border-bottom: none; }
+  .cta-actions { flex-direction: column; align-items: stretch; }
+  .cta-actions .btn { justify-content: center; }
+  .prod-actions { flex-direction: column; }
+  .prod-actions .btn { justify-content: center; width: 100%; }
+  .prod-guarantee { gap: 10px; flex-wrap: wrap; }
+  .product-thumbs { display: none; }
+  .about-section { padding: 72px 20px; min-height: auto; }
+  .about-side-tab { display: none; }
+  .about-title { font-size: 5rem; margin-bottom: 36px; }
+  .contact-section { padding: 52px 20px 80px; }
+  .side-widget { display: none; }
+  .footer-grid { grid-template-columns: 1fr; }
+  .footer-inner { padding: 0 20px; }
+  .footer-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .container { padding: 0 20px; }
+  .navbar-inner { padding: 0 16px; }
+  .sticky-cta { display: flex; }
+  body { padding-bottom: 72px; }
+  .shop-grid { grid-template-columns: 1fr; }
+  .coll-grid { grid-template-columns: 1fr; }
+  .form-row { grid-template-columns: 1fr; }
+  .section { padding: 72px 0; }
+  .section-header { margin-bottom: 48px; }
+  .coll-header { padding: 48px 0 36px; }
+  .coll-section { padding: 48px 0 80px; }
+}
+@media (max-width: 480px) {
+  html { font-size: 8.5px; }
+  .hero-title { font-size: 3.6rem; }
+  .cta-title { font-size: 3.2rem; }
+  .hero-left { padding: 28px 16px 24px; }
+  .hero-right { min-height: 220px; }
+  .hero-product-img { width: 85%; }
+  .carousel-dots { bottom: 16px; }
+  .ann-bar { font-size: .95rem; }
+  .navbar-inner { padding: 0 12px; }
+  .container { padding: 0 16px; }
+  .footer-inner { padding: 0 16px; }
+  .cd-unit { font-size: 1.2rem; padding: 3px 7px; }
+  .price-now { font-size: 3rem; }
+  .coll-price-now { font-size: 2.4rem; }
+  .rev-stat-num { font-size: 3.8rem; }
+}
+
+/* ── CART DRAWER ── */
+.ss-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.45);
+  z-index: 900;
+  opacity: 0; pointer-events: none;
+  transition: opacity .3s;
+}
+.ss-overlay.open { opacity: 1; pointer-events: auto; }
+.ss-drawer {
+  position: fixed; top: 0; right: 0;
+  width: min(420px, 100vw);
+  height: 100dvh;
+  background: var(--white);
+  z-index: 901;
+  display: flex; flex-direction: column;
+  transform: translateX(100%);
+  transition: transform .35s cubic-bezier(.4,0,.2,1);
+  box-shadow: -8px 0 40px rgba(0,0,0,.12);
+}
+.ss-drawer.open { transform: translateX(0); }
+.ss-drawer-head {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.ss-drawer-title {
+  font-family: var(--font);
+  font-size: 1.55rem;
+  font-weight: 800;
+  letter-spacing: .12em;
+  text-transform: uppercase;
+  color: var(--dark-blue);
+}
+.ss-drawer-close {
+  background: none; border: none; cursor: pointer;
+  font-size: 2.4rem; line-height: 1;
+  color: var(--muted); padding: 0 4px;
+  transition: color .2s;
+}
+.ss-drawer-close:hover { color: var(--dark-blue); }
+.ss-drawer-body {
+  flex: 1; overflow-y: auto;
+  padding: 16px 24px;
+}
+.ss-cart-empty {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 8px;
+  height: 100%; min-height: 240px;
+  color: var(--muted);
+  font-family: var(--mono); font-size: 1.2rem;
+}
+.ss-cart-empty svg { opacity: .3; }
+.ss-cart-item {
+  display: flex; align-items: center; gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border);
+}
+.ss-item-img {
+  width: 72px; height: 72px; flex-shrink: 0;
+  border-radius: 8px; overflow: hidden;
+  border: 1px solid var(--border);
+}
+.ss-item-img img { width: 100%; height: 100%; object-fit: cover; }
+.ss-item-info { flex: 1; }
+.ss-item-name {
+  font-family: var(--font); font-size: 1.2rem; font-weight: 700;
+  color: var(--dark-blue); margin-bottom: 3px;
+}
+.ss-item-price {
+  font-family: var(--mono); font-size: 1.25rem; font-weight: 600;
+  color: var(--blue); margin-bottom: 8px;
+}
+.ss-qty-row { display: flex; align-items: center; gap: 8px; }
+.ss-qty-btn {
+  width: 26px; height: 26px; border-radius: 50%;
+  border: 1.5px solid var(--border-b);
+  background: none; cursor: pointer;
+  font-size: 1.4rem; line-height: 1;
+  color: var(--dark-blue);
+  display: flex; align-items: center; justify-content: center;
+  transition: background .15s, border-color .15s;
+}
+.ss-qty-btn:hover { background: var(--blue-dim); border-color: var(--blue); }
+.ss-qty-num {
+  font-family: var(--mono); font-size: 1.3rem; font-weight: 600;
+  min-width: 20px; text-align: center;
+}
+.ss-remove-btn {
+  background: none; border: none; cursor: pointer;
+  font-size: 2rem; line-height: 1; color: var(--muted);
+  padding: 4px; transition: color .2s; flex-shrink: 0;
+}
+.ss-remove-btn:hover { color: #e74c3c; }
+.ss-drawer-foot {
+  padding: 16px 24px 24px;
+  border-top: 1px solid var(--border);
+  flex-shrink: 0;
+}
+.ss-total-row {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 16px;
+  font-family: var(--font); font-size: 1.4rem;
+}
+.ss-total-row strong {
+  font-family: var(--mono); font-size: 1.8rem; font-weight: 700;
+  color: var(--dark-blue);
+}
+.ss-stripe-btn {
+  width: 100%; justify-content: center;
+  font-size: 1.15rem; padding: 15px 24px;
+  margin-bottom: 14px;
+}
+.ss-or-divider {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 12px; color: var(--muted);
+  font-family: var(--mono); font-size: 1rem;
+}
+.ss-or-divider::before, .ss-or-divider::after {
+  content: ''; flex: 1; height: 1px; background: var(--border);
+}
+#ssPaypalBtn { margin-bottom: 14px; min-height: 44px; }
+.ss-pay-icons {
+  display: flex; flex-wrap: wrap; gap: 6px; justify-content: center;
+}
+
+/* ── SPA ── */
+.spa-page { display: none; }
+
+/* ── THANK-YOU PAGE ── */
+.ty-section {
+  min-height: calc(100vh - 112px);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center; padding: 80px 24px;
+}
+.ty-icon {
+  width: 80px; height: 80px; border-radius: 50%;
+  background: #e9f7ef;
+  display: flex; align-items: center; justify-content: center;
+  margin: 0 auto 32px;
+}
+.ty-icon svg { color: #27ae60; }
+.ty-title {
+  font-family: var(--font);
+  font-size: clamp(3.2rem, 5vw, 5.5rem);
+  font-weight: 900; text-transform: uppercase;
+  color: var(--dark-blue); line-height: 1.05; margin-bottom: 20px;
+}
+.ty-title span { color: var(--blue); }
+.ty-sub {
+  font-size: 1.5rem; color: var(--muted);
+  max-width: 500px; margin: 0 auto 36px; line-height: 1.6;
+}
+.ty-details {
+  display: flex; gap: 24px; flex-wrap: wrap;
+  justify-content: center; margin-bottom: 44px;
+}
+.ty-detail {
+  display: flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: 1.1rem;
+  color: var(--dark-blue); font-weight: 600;
+}
+.ty-detail svg { color: var(--blue); }
   </style>
+  <script>
+window.SITE_CONFIG = {
+    "site":  {
+                 "title":  "SeatSoother | Premium Donut Cushion — Sit Freely, Heal Faster",
+                 "description":  "Shop SeatSoother — Medical-grade memory foam donut cushion for hemorrhoid relief, tailbone pain, and post-surgery recovery. Free shipping. 30-day guarantee.",
+                 "email":  "contact@seatsoothers.com"
+             },
+    "announcement":  "EOFY Sale  —  30% OFF  ·  Free Shipping on All Orders",
+    "countdown":  {
+                      "durationHours":  10
+                  },
+    "cart":  {
+                 "stripePaymentLink":  "https://buy.stripe.com/REPLACE_WITH_YOUR_STRIPE_LINK",
+                 "paypalClientId":  "REPLACE_WITH_YOUR_PAYPAL_CLIENT_ID",
+                 "currency":  "AUD",
+                 "price":  189.99
+             },
+    "hero":  {
+                 "sideTab":  "Get 30% Off",
+                 "title":  "Sit Freely.\nHeal Faster.\nEvery Seat.",
+                 "ctaText":  "Shop Now",
+                 "ctaLink":  "#collection",
+                 "image":  "Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg",
+                 "imageAlt":  "SeatSoother Donut Cushion"
+             },
+    "stickyCta":  {
+                      "home":  "Shop Now — $189.99",
+                      "product":  "Order Now — $189.99"
+                  },
+    "collection":  {
+                       "eyebrow":  "Choose Your Colour",
+                       "title":  "The Donut Cushion Collection",
+                       "subtitle":  "2 Colours  ·  $189.99  ·  Free Shipping"
+                   },
+    "products":  {
+                     "black":  {
+                                   "shortName":  "Classic Black",
+                                   "eyebrow":  "Premium Donut Cushion",
+                                   "image":  "Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg",
+                                   "imageAlt":  "SeatSoother — Classic Black",
+                                   "badge":  "-30%",
+                                   "priceNow":  "$189.99",
+                                   "priceWas":  "$271.00",
+                                   "rating":  "4.9",
+                                   "reviewCount":  "10,247 Reviews",
+                                   "link":  "product.html?color=black",
+                                   "cartName":  "SeatSoother Classic Black"
+                               },
+                     "blue":  {
+                                  "shortName":  "Navy Blue",
+                                  "eyebrow":  "Premium Donut Cushion",
+                                  "image":  "Brand_assets/H90ec0ec1be46449ca5e40d7792b52ae0Y.avif",
+                                  "imageAlt":  "SeatSoother — Navy Blue",
+                                  "badge":  "-30%",
+                                  "priceNow":  "$189.99",
+                                  "priceWas":  "$271.00",
+                                  "rating":  "4.9",
+                                  "reviewCount":  "10,247 Reviews",
+                                  "link":  "product.html?color=blue",
+                                  "cartName":  "SeatSoother Navy Blue"
+                              }
+                 },
+    "productDetail":  {
+                          "eyebrow":  "Premium Donut Comfort Cushion",
+                          "priceNow":  "$189.99",
+                          "priceWas":  "$271",
+                          "discount":  "SAVE 30%",
+                          "rating":  "4.9 / 5",
+                          "reviewCount":  "10,247 Verified Reviews",
+                          "stock":  "Only 11 left in stock",
+                          "description":  "Dual U-shaped medical-grade memory foam with precision pressure-relief zones. Eliminates all contact with your tailbone and sensitive tissue — not just redistributes pressure.",
+                          "checkoutLink":  "#",
+                          "features":  [
+                                           "Dual U-shaped cutout — zero pressure on sensitive areas",
+                                           "Medical-grade high-density memory foam",
+                                           "Anti-slip rubber base — grips any surface",
+                                           "Machine-washable breathable zip cover",
+                                           "Doctor recommended for post-surgery recovery"
+                                       ],
+                          "gallery":  [
+                                          "Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg",
+                                          "Brand_assets/H5926658fc38641ecadee5d9f7dc032dbR.jpg",
+                                          "Brand_assets/H172309b87342480e95aac12817264e25z.jpg",
+                                          "Brand_assets/54.png"
+                                      ]
+                      },
+    "anatomy":  {
+                    "eyebrow":  "Engineering Breakdown",
+                    "title":  "Built for Precision Relief.",
+                    "image":  "Brand_assets/H5926658fc38641ecadee5d9f7dc032dbR.jpg",
+                    "imageAlt":  "SeatSoother anatomy diagram",
+                    "features":  [
+                                     {
+                                         "num":  "01",
+                                         "title":  "Tailbone U-Shaped Cutout",
+                                         "text":  "Specifically shaped to lift your coccyx completely off the seat, eliminating every pressure point on the tailbone. Effective from the first sit."
+                                     },
+                                     {
+                                         "num":  "02",
+                                         "title":  "Pressure Relief Hole",
+                                         "text":  "Central opening ensures zero contact on hemorrhoids and sensitive tissue. Avoids all painful areas so you can sit as long as you need to."
+                                     },
+                                     {
+                                         "num":  "03",
+                                         "title":  "Ergonomic Slope Design",
+                                         "text":  "Forward tilt promotes healthy blood circulation in the thighs, reduces nerve compression, and realigns the spine naturally."
+                                     },
+                                     {
+                                         "num":  "04",
+                                         "title":  "Front Groove",
+                                         "text":  "Dedicated channel at the front improves circulation and supports intimate area health — unique to the dual U-shaped architecture."
+                                     }
+                                 ]
+                },
+    "useCases":  {
+                     "eyebrow":  "Every Situation",
+                     "title":  "One Cushion.\nEvery Seat.",
+                     "image":  "Brand_assets/H172309b87342480e95aac12817264e25z.jpg",
+                     "imageAlt":  "SeatSoother in use — car seat, sofa, office chair",
+                     "caption":  "Works on every surface — car, sofa, office",
+                     "tag":  "Universal Fit",
+                     "cases":  [
+                                   {
+                                       "icon":  "🚗",
+                                       "title":  "Hemorrhoids",
+                                       "text":  "The donut opening removes all contact with hemorrhoidal tissue, letting you drive, work, or travel in complete comfort throughout the day."
+                                   },
+                                   {
+                                       "icon":  "🦴",
+                                       "title":  "Tailbone Pain",
+                                       "text":  "The U-shaped cutout lifts your coccyx entirely off the seat surface. Relief begins immediately — even after years of chronic tailbone discomfort."
+                                   },
+                                   {
+                                       "icon":  "🏗️",
+                                       "title":  "Hip & Back Pain",
+                                       "text":  "Memory foam distributes your weight evenly, eliminating the pressure spikes that cause hip and lower back pain during long sitting sessions."
+                                   }
+                               ]
+                 },
+    "howTo":  {
+                  "eyebrow":  "Correct Usage",
+                  "title":  "Use It Right.\nFeel It Work.",
+                  "image":  "Brand_assets/54.png",
+                  "imageAlt":  "SeatSoother correct use diagram",
+                  "steps":  [
+                                {
+                                    "num":  "01",
+                                    "title":  "Place on Any Seat",
+                                    "text":  "Set SeatSoother flat on your chair, car seat, or sofa. The anti-slip rubber base locks it in position on any surface — no adjusting needed."
+                                },
+                                {
+                                    "num":  "02",
+                                    "title":  "Sit Centred & Relaxed",
+                                    "text":  "Lower yourself so your tailbone aligns with the open cutout. The memory foam conforms to your shape within seconds."
+                                },
+                                {
+                                    "num":  "03",
+                                    "title":  "Feel Instant Relief",
+                                    "text":  "Pressure is eliminated — not just redistributed. Most customers feel the difference within the first minute of sitting."
+                                }
+                            ],
+                  "warning":  "Do not use upside down or backwards. The cutout must face rearward to align with your anatomy. See the diagram for correct orientation."
+              },
+    "reviews":  {
+                    "eyebrow":  "Customer Reviews",
+                    "title":  "Real People.\nReal Relief.",
+                    "items":  [
+                                  {
+                                      "text":  "“After my hemorrhoidectomy I couldn’t sit for more than five minutes. This cushion was a lifesaver. I work a full desk day now without any pain. Absolutely worth every penny.”",
+                                      "name":  "Sarah H.",
+                                      "role":  "Post-surgery recovery",
+                                      "initials":  "SH"
+                                  },
+                                  {
+                                      "text":  "“I drive Uber 10 hours a day. Before SeatSoother I was in agony by lunchtime. Now I barely notice my tailbone pain at all. The non-slip base stays perfectly on leather.”",
+                                      "name":  "Marcus R.",
+                                      "role":  "Professional driver",
+                                      "initials":  "MR"
+                                  },
+                                  {
+                                      "text":  "“My physiotherapist recommended this for my sciatica. The difference was noticeable from day one. I’ve ordered two more — one for the office, one for the car.”",
+                                      "name":  "Janet K.",
+                                      "role":  "Office manager — sciatica",
+                                      "initials":  "JK"
+                                  }
+                              ],
+                    "stats":  [
+                                  { "num":  "4.9",  "label":  "Average Rating" },
+                                  { "num":  "10K+", "label":  "Verified Reviews" },
+                                  { "num":  "97%",  "label":  "Would Recommend" }
+                              ]
+                },
+    "faq":  {
+                "eyebrow":  "FAQ",
+                "title":  "Questions\nAnswered.",
+                "items":  [
+                              { "q":  "What makes SeatSoother different from a regular foam cushion?", "a":  "SeatSoother uses medical-grade dual U-shaped memory foam. Your tailbone and rectal region never contact the seat surface. Generic cushions redistribute pressure — ours removes it completely." },
+                              { "q":  "Can I use it on any chair or seat?", "a":  "Yes. SeatSoother works on office chairs, car seats, dining chairs, wheelchairs, and sofas. The anti-slip rubber base secures it on any surface — leather, fabric, or hard plastic." },
+                              { "q":  "How do I clean the cover?", "a":  "Unzip and remove the outer cover, then machine-wash on a cold, gentle cycle. Tumble dry on low or air dry. Never machine-wash the foam core itself." },
+                              { "q":  "Is there a money-back guarantee?", "a":  "Yes. We offer a 30-day no-questions-asked money-back guarantee. If SeatSoother doesn't provide the relief you're looking for, contact us for a full refund — including return postage." },
+                              { "q":  "Is it doctor recommended?", "a":  "Yes. Recommended by physiotherapists, colorectal surgeons, and GPs as a non-invasive aid for hemorrhoid discomfort, post-surgical recovery, and coccyx pain." },
+                              { "q":  "How long does shipping take?", "a":  "Orders are dispatched within 24 hours. Standard delivery takes 3–5 business days. Express 1–2 day delivery is available at checkout." },
+                              { "q":  "What colours are available?", "a":  "SeatSoother is available in two colours: Classic Black and Navy Blue. Both are priced identically and offer the same premium memory foam comfort and features." }
+                          ]
+            },
+    "cta":  {
+                "eyebrow":  "Limited Time Offer",
+                "title":  "Stop Sitting\nIn Pain.",
+                "titleHighlight":  "Pain.",
+                "subtitle":  "Join over 10,000 customers who chose pain-free sitting. Free shipping. 30-day guarantee. No risk.",
+                "ctaText":  "Order Now — $189.99",
+                "reviewsText":  "Read Reviews",
+                "guarantee":  "30-Day Money-Back  ·  Free Shipping  ·  Secure Checkout"
+            },
+    "about":  {
+                  "title":  "About Us",
+                  "sideTab":  "Get 30% Off",
+                  "paragraphs":  [
+                                     "We are a small, passionate team with a deep love for wellness, ergonomic living, and creating products that make a real difference. What started with one simple idea — a smarter way to sit — has grown into a full collection of precision-engineered comfort cushions designed to elevate your daily life effortlessly.",
+                                     "At SeatSoother, we believe that comfort should be part of your design, not an afterthought. Everything we create is made to help you recover from pain, support your posture, and feel better in every seat — whether that's your office chair, car seat, or sofa at home.",
+                                     "Our flagship donut cushion was developed alongside physiotherapists and colorectal specialists to ensure it genuinely works. Every dimension, every foam density, and every cutout angle was engineered with one purpose: to eliminate pressure on sensitive anatomy so you can sit freely and heal faster.",
+                                     "Whether you're managing hemorrhoids, recovering from surgery, or simply tired of back and tailbone pain — we're here to help you build a life that's more comfortable, more mobile, and uniquely yours.",
+                                     "Thank you for being here and supporting our small business."
+                                 ],
+                  "email":  "contact@seatsoothers.com"
+              },
+    "contact":  {
+                    "title":  "Contact Form",
+                    "email":  "contact@seatsoothers.com"
+                },
+    "footer":  {
+                   "description":  "Premium donut comfort cushions for hemorrhoid relief, tailbone pain, and post-surgery recovery.",
+                   "email":  "contact@seatsoothers.com",
+                   "copyright":  "© 2026 SeatSoother. All rights reserved.",
+                   "social":  {
+                                  "instagram":  "https://www.instagram.com/",
+                                  "facebook":  "https://www.facebook.com/",
+                                  "tiktok":  "https://www.tiktok.com/@seatsoother?lang=en"
+                              },
+                   "links":  {
+                                 "shop":  [
+                                              { "text":  "Classic Black", "href":  "product.html?color=black" },
+                                              { "text":  "Navy Blue",     "href":  "product.html?color=blue" },
+                                              { "text":  "Reviews",       "href":  "product.html?color=black#reviews" },
+                                              { "text":  "FAQ",           "href":  "product.html?color=black#faq" }
+                                          ],
+                                 "support":  [
+                                                 { "text":  "Shipping & Returns", "href":  "#" },
+                                                 { "text":  "Contact Us",           "href":  "contact.html" },
+                                                 { "text":  "Track Order",          "href":  "#" }
+                                             ],
+                                 "legal":  [
+                                               { "text":  "Privacy Policy",   "href":  "#" },
+                                               { "text":  "Terms of Service", "href":  "#" },
+                                               { "text":  "Refund Policy",    "href":  "#" }
+                                           ]
+                             }
+               }
+};
+  </script>
 </head>
 <body>
 
@@ -775,8 +2039,817 @@
 </footer>
 
 
-<script src="cart.js"></script>
-<script src="editor.js"></script>
+<script>
+/* ════════════════════════════════════════════════════════
+   SeatSoother — Cart + Checkout
+   ════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  var _sc = window.SITE_CONFIG && window.SITE_CONFIG.cart;
+  var CONFIG = {
+    stripePaymentLink: (_sc && _sc.stripePaymentLink) || 'https://buy.stripe.com/REPLACE_WITH_YOUR_STRIPE_LINK',
+    paypalClientId:    (_sc && _sc.paypalClientId)    || 'REPLACE_WITH_YOUR_PAYPAL_CLIENT_ID',
+    currency:          (_sc && _sc.currency)          || 'AUD',
+    price:             (_sc && _sc.price)             || 189.99
+  };
+
+  var CART_KEY = 'ss_cart_items';
+
+  function getCart() {
+    try { return JSON.parse(localStorage.getItem(CART_KEY)) || []; }
+    catch (e) { return []; }
+  }
+
+  function saveCart(items) {
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+    localStorage.setItem('ss_cart', String(sumQty(items)));
+    updateBadges();
+    renderItems();
+  }
+
+  function sumQty(items) {
+    return items.reduce(function (s, i) { return s + i.qty; }, 0);
+  }
+
+  function sumPrice(items) {
+    return items.reduce(function (s, i) { return s + i.qty * CONFIG.price; }, 0);
+  }
+
+  function updateBadges() {
+    var qty = sumQty(getCart());
+    document.querySelectorAll('#cartCount, .nav-cart-badge').forEach(function (el) {
+      el.textContent = String(qty);
+    });
+  }
+
+  window.SS = window.SS || {};
+
+  window.SS.addToCart = function (name, color, btn) {
+    var cart = getCart();
+    var item = cart.find(function (i) { return i.name === name && i.color === color; });
+    if (item) {
+      item.qty++;
+    } else {
+      cart.push({ name: name, color: color, qty: 1, price: CONFIG.price });
+    }
+    saveCart(cart);
+
+    if (btn) {
+      var orig = btn.innerHTML;
+      btn.innerHTML = '&#10003; Added to Cart!';
+      btn.style.background = '#27ae60';
+      btn.style.borderColor = '#27ae60';
+      setTimeout(function () {
+        btn.innerHTML = orig;
+        btn.style.background = '';
+        btn.style.borderColor = '';
+      }, 2000);
+    }
+    openDrawer();
+  };
+
+  function injectDrawer() {
+    if (document.getElementById('ssCartDrawer')) return;
+
+    var overlay = document.createElement('div');
+    overlay.id = 'ssCartOverlay';
+    overlay.className = 'ss-overlay';
+    overlay.addEventListener('click', closeDrawer);
+    document.body.appendChild(overlay);
+
+    var drawer = document.createElement('div');
+    drawer.id = 'ssCartDrawer';
+    drawer.className = 'ss-drawer';
+    drawer.innerHTML =
+      '<div class="ss-drawer-head">' +
+        '<span class="ss-drawer-title">Your Cart</span>' +
+        '<button class="ss-drawer-close" id="ssCartClose" aria-label="Close cart">&times;</button>' +
+      '</div>' +
+      '<div class="ss-drawer-body" id="ssCartBody"></div>' +
+      '<div class="ss-drawer-foot" id="ssCartFoot">' +
+        '<div class="ss-total-row">' +
+          '<span>Total</span>' +
+          '<strong id="ssCartTotal">$0.00</strong>' +
+        '</div>' +
+        '<button class="btn btn-blue ss-stripe-btn" id="ssStripeBtn">' +
+          '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="4" width="22" height="16" rx="2"/><path d="M1 10h22"/></svg>' +
+          'Checkout — Pay Securely' +
+        '</button>' +
+        '<div class="ss-or-divider"><span>or pay with</span></div>' +
+        '<div id="ssPaypalBtn"></div>' +
+        '<div class="ss-pay-icons">' +
+          '<span class="payment-icon pi-visa">VISA</span>' +
+          '<span class="payment-icon pi-mastercard" aria-label="Mastercard">' +
+            '<svg width="38" height="22" viewBox="0 0 38 22" xmlns="http://www.w3.org/2000/svg"><circle cx="14" cy="11" r="10" fill="#EB001B"/><circle cx="24" cy="11" r="10" fill="#F79E1B"/><path d="M19 3.8a10 10 0 0 1 0 14.4A10 10 0 0 1 19 3.8z" fill="#FF5F00"/></svg>' +
+          '</span>' +
+          '<span class="payment-icon pi-apple-pay"><svg width="14" height="14" viewBox="0 0 14 17" fill="white" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;margin-right:3px"><path d="M11.5 5.5c-.8 1-2.1 1.8-3.3 1.7-.2-1.3.5-2.6 1.2-3.4.8-1 2.2-1.7 3.3-1.8.1 1.3-.4 2.6-1.2 3.5zm1.2 1.8c-1.8-.1-3.4 1-4.2 1-1 0-2.4-1-3.9-1-2 0-3.9 1.2-5 3C-2 14 .3 19 2.6 22c1.1 1.5 2.4 3 4.1 3 1.6-.1 2.2-1 4.2-1 2 0 2.5.9 4.2 1 1.7 0 2.9-1.5 4-3 1-1.3 1.4-2.6 1.4-2.7-.1 0-2.7-1-2.7-4 0-2.6 2-3.7 2.1-3.8-1.2-1.8-3-2.2-3.7-2.2z"/></svg>Pay</span>' +
+          '<span class="payment-icon pi-afterpay">afterpay</span>' +
+          '<span class="payment-icon pi-paypal"><svg width="13" height="16" viewBox="0 0 13 16" fill="none" xmlns="http://www.w3.org/2000/svg" style="flex-shrink:0;margin-right:3px"><path d="M10.5 2C10.5 4.5 8.5 6 6 6H4L3 11H1L2.7 1H7c2 0 3.5 0 3.5 1z" fill="#009CDE"/><path d="M11.5 4.5C11.5 7 9.5 8.5 7 8.5H5L4 13H2l.7-3H5c2.5 0 4.5-1 5.5-3 .7-.5 1-1.5 1-2z" fill="#003087"/></svg>PayPal</span>' +
+        '</div>' +
+      '</div>';
+
+    document.body.appendChild(drawer);
+    document.getElementById('ssCartClose').addEventListener('click', closeDrawer);
+    document.getElementById('ssStripeBtn').addEventListener('click', checkoutStripe);
+  }
+
+  function productImg(color) {
+    var products = window.SITE_CONFIG && window.SITE_CONFIG.products;
+    if (products && products[color] && products[color].image) return products[color].image;
+    return color === 'blue'
+      ? 'Brand_assets/H90ec0ec1be46449ca5e40d7792b52ae0Y.avif'
+      : 'Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg';
+  }
+
+  function renderItems() {
+    var body   = document.getElementById('ssCartBody');
+    var foot   = document.getElementById('ssCartFoot');
+    var totalEl = document.getElementById('ssCartTotal');
+    if (!body) return;
+
+    var cart = getCart();
+
+    if (!cart.length) {
+      body.innerHTML =
+        '<div class="ss-cart-empty">' +
+          '<svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2"><circle cx="9" cy="21" r="1"/><circle cx="20" cy="21" r="1"/><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/></svg>' +
+          '<p>Your cart is empty</p>' +
+          '<a href="index.html#collection" class="btn btn-blue" style="margin-top:14px;font-size:1.1rem;padding:12px 28px;">Shop Now</a>' +
+        '</div>';
+      if (foot) foot.style.display = 'none';
+      return;
+    }
+
+    if (foot) foot.style.display = '';
+    if (totalEl) totalEl.textContent = '$' + sumPrice(cart).toFixed(2);
+
+    body.innerHTML = cart.map(function (item) {
+      var dn = encodeAttr(item.name);
+      var dc = encodeAttr(item.color);
+      return (
+        '<div class="ss-cart-item">' +
+          '<div class="ss-item-img"><img src="' + productImg(item.color) + '" alt="' + dn + '" /></div>' +
+          '<div class="ss-item-info">' +
+            '<div class="ss-item-name">' + item.name + '</div>' +
+            '<div class="ss-item-price">$' + (item.qty * CONFIG.price).toFixed(2) + '</div>' +
+            '<div class="ss-qty-row">' +
+              '<button class="ss-qty-btn" data-action="dec" data-name="' + dn + '" data-color="' + dc + '">&#8722;</button>' +
+              '<span class="ss-qty-num">' + item.qty + '</span>' +
+              '<button class="ss-qty-btn" data-action="inc" data-name="' + dn + '" data-color="' + dc + '">&#43;</button>' +
+            '</div>' +
+          '</div>' +
+          '<button class="ss-remove-btn" data-name="' + dn + '" data-color="' + dc + '" aria-label="Remove">&times;</button>' +
+        '</div>'
+      );
+    }).join('');
+
+    body.querySelectorAll('.ss-qty-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        changeQty(this.dataset.name, this.dataset.color, this.dataset.action === 'inc' ? 1 : -1);
+      });
+    });
+    body.querySelectorAll('.ss-remove-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        removeItem(this.dataset.name, this.dataset.color);
+      });
+    });
+  }
+
+  function encodeAttr(str) {
+    return String(str).replace(/"/g, '&quot;');
+  }
+
+  function changeQty(name, color, delta) {
+    var cart = getCart();
+    var item = cart.find(function (i) { return i.name === name && i.color === color; });
+    if (!item) return;
+    item.qty = Math.max(1, item.qty + delta);
+    saveCart(cart);
+  }
+
+  function removeItem(name, color) {
+    saveCart(getCart().filter(function (i) { return !(i.name === name && i.color === color); }));
+  }
+
+  function openDrawer() {
+    var drawer  = document.getElementById('ssCartDrawer');
+    var overlay = document.getElementById('ssCartOverlay');
+    if (!drawer) return;
+    renderItems();
+    drawer.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    mountPayPal();
+  }
+
+  function closeDrawer() {
+    var drawer  = document.getElementById('ssCartDrawer');
+    var overlay = document.getElementById('ssCartOverlay');
+    if (!drawer) return;
+    drawer.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  function checkoutStripe() {
+    var cart = getCart();
+    var qty  = sumQty(cart);
+    if (!qty) return;
+    var url = CONFIG.stripePaymentLink;
+    if (url.indexOf('REPLACE') !== -1) {
+      alert('Stripe payment link not configured yet.\nOpen site-config.js and replace REPLACE_WITH_YOUR_STRIPE_LINK with your Stripe Payment Link URL.');
+      return;
+    }
+    if (qty > 1) url += (url.indexOf('?') >= 0 ? '&' : '?') + 'prefilled_quantity=' + qty;
+    window.location.href = url;
+  }
+
+  var ppSdkLoading = false;
+  var ppMounted    = false;
+
+  function mountPayPal() {
+    if (ppMounted) return;
+    var container = document.getElementById('ssPaypalBtn');
+    if (!container) return;
+    if (CONFIG.paypalClientId.indexOf('REPLACE') !== -1) return;
+
+    if (window.paypal) {
+      renderPayPalButtons();
+      return;
+    }
+    if (ppSdkLoading) return;
+    ppSdkLoading = true;
+
+    var s = document.createElement('script');
+    s.src = 'https://www.paypal.com/sdk/js' +
+            '?client-id=' + CONFIG.paypalClientId +
+            '&currency=' + CONFIG.currency +
+            '&intent=capture' +
+            '&components=buttons' +
+            '&enable-funding=venmo,paylater,card,afterpay_clearpay';
+    s.onload = renderPayPalButtons;
+    document.head.appendChild(s);
+  }
+
+  function renderPayPalButtons() {
+    if (ppMounted) return;
+    ppMounted = true;
+    window.paypal.Buttons({
+      style: { layout: 'vertical', shape: 'rect', label: 'pay', color: 'gold', height: 44 },
+      createOrder: function (data, actions) {
+        var cart = getCart();
+        return actions.order.create({
+          purchase_units: [{
+            description: 'SeatSoother Donut Cushion',
+            amount: { value: sumPrice(cart).toFixed(2), currency_code: CONFIG.currency }
+          }]
+        });
+      },
+      onApprove: function (data, actions) {
+        return actions.order.capture().then(function () {
+          localStorage.removeItem(CART_KEY);
+          localStorage.setItem('ss_cart', '0');
+          updateBadges();
+          closeDrawer();
+          if (window.SS && window.SS.navigate) {
+            window.SS.navigate('thankyou');
+          } else {
+            window.location.href = 'thank-you.html';
+          }
+        });
+      },
+      onError: function (err) {
+        console.error('PayPal error', err);
+      }
+    }).render('#ssPaypalBtn');
+  }
+
+  document.addEventListener('DOMContentLoaded', function () {
+    injectDrawer();
+    updateBadges();
+
+    document.querySelectorAll('.nav-cart').forEach(function (el) {
+      el.addEventListener('click', function (e) {
+        e.preventDefault();
+        openDrawer();
+      });
+    });
+  });
+})();
+</script>
+<script>
+/* SeatSoother Site Editor — localhost only */
+(function () {
+  'use strict';
+
+  var host = window.location.hostname;
+  if (host !== 'localhost' && host !== '127.0.0.1') return;
+
+  var SCHEMA = [
+    {
+      id: 'general', label: 'General',
+      sections: [
+        { title: 'Announcement Bar', fields: [
+          { key: 'announcement', label: 'Announcement Text', type: 'text' }
+        ]},
+        { title: 'Countdown Timer', fields: [
+          { key: 'countdown.durationHours', label: 'Duration (hours) — auto-resets when expires', type: 'number' }
+        ]},
+        { title: 'Payment & Checkout', fields: [
+          { key: 'cart.stripePaymentLink', label: 'Stripe Payment Link URL', type: 'url' },
+          { key: 'cart.paypalClientId',    label: 'PayPal Client ID',        type: 'text' },
+          { key: 'cart.currency',          label: 'Currency Code (e.g. AUD)', type: 'text' },
+          { key: 'cart.price',             label: 'Product Price (number)',   type: 'number' }
+        ]},
+        { title: 'Contact & Social', fields: [
+          { key: 'site.email',                 label: 'Site Email',       type: 'text' },
+          { key: 'footer.social.instagram',    label: 'Instagram URL',    type: 'url' },
+          { key: 'footer.social.facebook',     label: 'Facebook URL',     type: 'url' },
+          { key: 'footer.social.tiktok',       label: 'TikTok URL',       type: 'url' }
+        ]}
+      ]
+    },
+    {
+      id: 'hero', label: 'Hero & Nav',
+      sections: [
+        { title: 'Hero Section', fields: [
+          { key: 'hero.sideTab',  label: 'Side Tab Text',                    type: 'text' },
+          { key: 'hero.title',    label: 'Hero Title (use \\n for new lines)', type: 'textarea' },
+          { key: 'hero.ctaText',  label: 'CTA Button Text',                  type: 'text' },
+          { key: 'hero.ctaLink',  label: 'CTA Button Link',                  type: 'text' },
+          { key: 'hero.image',    label: 'Hero Product Image',                type: 'image' }
+        ]},
+        { title: 'Collection Header', fields: [
+          { key: 'collection.eyebrow',  label: 'Eyebrow Text', type: 'text' },
+          { key: 'collection.title',    label: 'Title',         type: 'text' },
+          { key: 'collection.subtitle', label: 'Subtitle',      type: 'text' }
+        ]},
+        { title: 'Sticky CTA Buttons', fields: [
+          { key: 'stickyCta.home',    label: 'Home Page Sticky Button',    type: 'text' },
+          { key: 'stickyCta.product', label: 'Product Page Sticky Button', type: 'text' }
+        ]}
+      ]
+    },
+    {
+      id: 'products', label: 'Products',
+      sections: [
+        { title: 'Classic Black', fields: [
+          { key: 'products.black.shortName',   label: 'Colour Name',    type: 'text' },
+          { key: 'products.black.eyebrow',     label: 'Eyebrow Text',  type: 'text' },
+          { key: 'products.black.priceNow',    label: 'Sale Price',     type: 'text' },
+          { key: 'products.black.priceWas',    label: 'Original Price', type: 'text' },
+          { key: 'products.black.badge',       label: 'Badge Text',     type: 'text' },
+          { key: 'products.black.rating',      label: 'Rating',         type: 'text' },
+          { key: 'products.black.reviewCount', label: 'Review Count',   type: 'text' },
+          { key: 'products.black.image',       label: 'Product Image',  type: 'image' },
+          { key: 'products.black.link',        label: 'Product Link',   type: 'text' },
+          { key: 'products.black.cartName',    label: 'Cart Item Name', type: 'text' }
+        ]},
+        { title: 'Navy Blue', fields: [
+          { key: 'products.blue.shortName',   label: 'Colour Name',    type: 'text' },
+          { key: 'products.blue.eyebrow',     label: 'Eyebrow Text',  type: 'text' },
+          { key: 'products.blue.priceNow',    label: 'Sale Price',     type: 'text' },
+          { key: 'products.blue.priceWas',    label: 'Original Price', type: 'text' },
+          { key: 'products.blue.badge',       label: 'Badge Text',     type: 'text' },
+          { key: 'products.blue.rating',      label: 'Rating',         type: 'text' },
+          { key: 'products.blue.reviewCount', label: 'Review Count',   type: 'text' },
+          { key: 'products.blue.image',       label: 'Product Image',  type: 'image' },
+          { key: 'products.blue.link',        label: 'Product Link',   type: 'text' },
+          { key: 'products.blue.cartName',    label: 'Cart Item Name', type: 'text' }
+        ]},
+        { title: 'Product Detail Page', fields: [
+          { key: 'productDetail.eyebrow',      label: 'Eyebrow Text',       type: 'text' },
+          { key: 'productDetail.priceNow',     label: 'Sale Price',          type: 'text' },
+          { key: 'productDetail.priceWas',     label: 'Original Price',      type: 'text' },
+          { key: 'productDetail.discount',     label: 'Discount Label',      type: 'text' },
+          { key: 'productDetail.rating',       label: 'Rating Text',         type: 'text' },
+          { key: 'productDetail.reviewCount',  label: 'Review Count',        type: 'text' },
+          { key: 'productDetail.stock',        label: 'Stock Text',          type: 'text' },
+          { key: 'productDetail.description',  label: 'Product Description', type: 'textarea' },
+          { key: 'productDetail.checkoutLink', label: 'Checkout / Payment Link', type: 'url' },
+          { key: 'productDetail.features.0',   label: 'Feature 1', type: 'text' },
+          { key: 'productDetail.features.1',   label: 'Feature 2', type: 'text' },
+          { key: 'productDetail.features.2',   label: 'Feature 3', type: 'text' },
+          { key: 'productDetail.features.3',   label: 'Feature 4', type: 'text' },
+          { key: 'productDetail.features.4',   label: 'Feature 5', type: 'text' },
+          { key: 'productDetail.gallery.0',    label: 'Gallery Image 1', type: 'image' },
+          { key: 'productDetail.gallery.1',    label: 'Gallery Image 2', type: 'image' },
+          { key: 'productDetail.gallery.2',    label: 'Gallery Image 3', type: 'image' },
+          { key: 'productDetail.gallery.3',    label: 'Gallery Image 4', type: 'image' }
+        ]}
+      ]
+    },
+    {
+      id: 'content', label: 'Page Content',
+      sections: [
+        { title: 'Anatomy Section', fields: [
+          { key: 'anatomy.eyebrow',          label: 'Eyebrow Text',     type: 'text' },
+          { key: 'anatomy.title',            label: 'Section Title',    type: 'text' },
+          { key: 'anatomy.image',            label: 'Anatomy Image',    type: 'image' },
+          { key: 'anatomy.features.0.num',   label: 'Feature 1 Number',      type: 'text' },
+          { key: 'anatomy.features.0.title', label: 'Feature 1 Title',       type: 'text' },
+          { key: 'anatomy.features.0.text',  label: 'Feature 1 Description', type: 'textarea' },
+          { key: 'anatomy.features.1.num',   label: 'Feature 2 Number',      type: 'text' },
+          { key: 'anatomy.features.1.title', label: 'Feature 2 Title',       type: 'text' },
+          { key: 'anatomy.features.1.text',  label: 'Feature 2 Description', type: 'textarea' },
+          { key: 'anatomy.features.2.num',   label: 'Feature 3 Number',      type: 'text' },
+          { key: 'anatomy.features.2.title', label: 'Feature 3 Title',       type: 'text' },
+          { key: 'anatomy.features.2.text',  label: 'Feature 3 Description', type: 'textarea' },
+          { key: 'anatomy.features.3.num',   label: 'Feature 4 Number',      type: 'text' },
+          { key: 'anatomy.features.3.title', label: 'Feature 4 Title',       type: 'text' },
+          { key: 'anatomy.features.3.text',  label: 'Feature 4 Description', type: 'textarea' }
+        ]},
+        { title: 'Use Cases Section', fields: [
+          { key: 'useCases.eyebrow',        label: 'Eyebrow Text',   type: 'text' },
+          { key: 'useCases.title',          label: 'Section Title',  type: 'text' },
+          { key: 'useCases.image',          label: 'Section Image',  type: 'image' },
+          { key: 'useCases.caption',        label: 'Image Caption',  type: 'text' },
+          { key: 'useCases.tag',            label: 'Image Tag',      type: 'text' },
+          { key: 'useCases.cases.0.icon',   label: 'Case 1 Icon (emoji)', type: 'text' },
+          { key: 'useCases.cases.0.title',  label: 'Case 1 Title',        type: 'text' },
+          { key: 'useCases.cases.0.text',   label: 'Case 1 Description',  type: 'textarea' },
+          { key: 'useCases.cases.1.icon',   label: 'Case 2 Icon (emoji)', type: 'text' },
+          { key: 'useCases.cases.1.title',  label: 'Case 2 Title',        type: 'text' },
+          { key: 'useCases.cases.1.text',   label: 'Case 2 Description',  type: 'textarea' },
+          { key: 'useCases.cases.2.icon',   label: 'Case 3 Icon (emoji)', type: 'text' },
+          { key: 'useCases.cases.2.title',  label: 'Case 3 Title',        type: 'text' },
+          { key: 'useCases.cases.2.text',   label: 'Case 3 Description',  type: 'textarea' }
+        ]},
+        { title: 'How To Use Section', fields: [
+          { key: 'howTo.eyebrow',         label: 'Eyebrow Text', type: 'text' },
+          { key: 'howTo.title',           label: 'Section Title', type: 'text' },
+          { key: 'howTo.image',           label: 'How-To Image',  type: 'image' },
+          { key: 'howTo.steps.0.num',     label: 'Step 1 Number',       type: 'text' },
+          { key: 'howTo.steps.0.title',   label: 'Step 1 Title',        type: 'text' },
+          { key: 'howTo.steps.0.text',    label: 'Step 1 Description',  type: 'textarea' },
+          { key: 'howTo.steps.1.num',     label: 'Step 2 Number',       type: 'text' },
+          { key: 'howTo.steps.1.title',   label: 'Step 2 Title',        type: 'text' },
+          { key: 'howTo.steps.1.text',    label: 'Step 2 Description',  type: 'textarea' },
+          { key: 'howTo.steps.2.num',     label: 'Step 3 Number',       type: 'text' },
+          { key: 'howTo.steps.2.title',   label: 'Step 3 Title',        type: 'text' },
+          { key: 'howTo.steps.2.text',    label: 'Step 3 Description',  type: 'textarea' },
+          { key: 'howTo.warning',         label: 'Warning Text',        type: 'textarea' }
+        ]},
+        { title: 'CTA Section', fields: [
+          { key: 'cta.eyebrow',    label: 'Eyebrow Text',    type: 'text' },
+          { key: 'cta.title',      label: 'CTA Title',       type: 'text' },
+          { key: 'cta.subtitle',   label: 'Subtitle',        type: 'textarea' },
+          { key: 'cta.ctaText',    label: 'Button Text',     type: 'text' },
+          { key: 'cta.reviewsText',label: 'Reviews Button',  type: 'text' },
+          { key: 'cta.guarantee',  label: 'Guarantee Text',  type: 'text' }
+        ]}
+      ]
+    },
+    {
+      id: 'reviews', label: 'Reviews & FAQ',
+      sections: [
+        { title: 'Customer Reviews', fields: [
+          { key: 'reviews.eyebrow',         label: 'Eyebrow Text',   type: 'text' },
+          { key: 'reviews.title',           label: 'Section Title',  type: 'text' },
+          { key: 'reviews.items.0.text',    label: 'Review 1 Text',     type: 'textarea' },
+          { key: 'reviews.items.0.name',    label: 'Review 1 Name',     type: 'text' },
+          { key: 'reviews.items.0.role',    label: 'Review 1 Role',     type: 'text' },
+          { key: 'reviews.items.0.initials',label: 'Review 1 Initials', type: 'text' },
+          { key: 'reviews.items.1.text',    label: 'Review 2 Text',     type: 'textarea' },
+          { key: 'reviews.items.1.name',    label: 'Review 2 Name',     type: 'text' },
+          { key: 'reviews.items.1.role',    label: 'Review 2 Role',     type: 'text' },
+          { key: 'reviews.items.1.initials',label: 'Review 2 Initials', type: 'text' },
+          { key: 'reviews.items.2.text',    label: 'Review 3 Text',     type: 'textarea' },
+          { key: 'reviews.items.2.name',    label: 'Review 3 Name',     type: 'text' },
+          { key: 'reviews.items.2.role',    label: 'Review 3 Role',     type: 'text' },
+          { key: 'reviews.items.2.initials',label: 'Review 3 Initials', type: 'text' }
+        ]},
+        { title: 'Review Stats', fields: [
+          { key: 'reviews.stats.0.num',   label: 'Stat 1 Number', type: 'text' },
+          { key: 'reviews.stats.0.label', label: 'Stat 1 Label',  type: 'text' },
+          { key: 'reviews.stats.1.num',   label: 'Stat 2 Number', type: 'text' },
+          { key: 'reviews.stats.1.label', label: 'Stat 2 Label',  type: 'text' },
+          { key: 'reviews.stats.2.num',   label: 'Stat 3 Number', type: 'text' },
+          { key: 'reviews.stats.2.label', label: 'Stat 3 Label',  type: 'text' }
+        ]},
+        { title: 'FAQ', fields: [
+          { key: 'faq.eyebrow', label: 'Eyebrow Text',  type: 'text' },
+          { key: 'faq.title',   label: 'Section Title', type: 'text' },
+          { key: 'faq.items.0.q', label: 'Q1', type: 'text' }, { key: 'faq.items.0.a', label: 'A1', type: 'textarea' },
+          { key: 'faq.items.1.q', label: 'Q2', type: 'text' }, { key: 'faq.items.1.a', label: 'A2', type: 'textarea' },
+          { key: 'faq.items.2.q', label: 'Q3', type: 'text' }, { key: 'faq.items.2.a', label: 'A3', type: 'textarea' },
+          { key: 'faq.items.3.q', label: 'Q4', type: 'text' }, { key: 'faq.items.3.a', label: 'A4', type: 'textarea' },
+          { key: 'faq.items.4.q', label: 'Q5', type: 'text' }, { key: 'faq.items.4.a', label: 'A5', type: 'textarea' },
+          { key: 'faq.items.5.q', label: 'Q6', type: 'text' }, { key: 'faq.items.5.a', label: 'A6', type: 'textarea' },
+          { key: 'faq.items.6.q', label: 'Q7', type: 'text' }, { key: 'faq.items.6.a', label: 'A7', type: 'textarea' }
+        ]}
+      ]
+    },
+    {
+      id: 'about', label: 'About & Contact',
+      sections: [
+        { title: 'About Page', fields: [
+          { key: 'about.sideTab',      label: 'Side Tab Text', type: 'text' },
+          { key: 'about.title',        label: 'Page Title',    type: 'text' },
+          { key: 'about.paragraphs.0', label: 'Paragraph 1',  type: 'textarea' },
+          { key: 'about.paragraphs.1', label: 'Paragraph 2',  type: 'textarea' },
+          { key: 'about.paragraphs.2', label: 'Paragraph 3',  type: 'textarea' },
+          { key: 'about.paragraphs.3', label: 'Paragraph 4',  type: 'textarea' },
+          { key: 'about.paragraphs.4', label: 'Paragraph 5',  type: 'textarea' },
+          { key: 'about.email',        label: 'Email Address', type: 'text' }
+        ]},
+        { title: 'Contact Page', fields: [
+          { key: 'contact.title', label: 'Page Title',    type: 'text' },
+          { key: 'contact.email', label: 'Email Address', type: 'text' }
+        ]}
+      ]
+    },
+    {
+      id: 'footer', label: 'Footer',
+      sections: [
+        { title: 'Footer Info', fields: [
+          { key: 'footer.description', label: 'Description Text', type: 'textarea' },
+          { key: 'footer.email',       label: 'Email Address',    type: 'text' },
+          { key: 'footer.copyright',   label: 'Copyright Text',   type: 'text' }
+        ]},
+        { title: 'Shop Links', fields: [
+          { key: 'footer.links.shop.0.text', label: 'Link 1 Text', type: 'text' }, { key: 'footer.links.shop.0.href', label: 'Link 1 URL', type: 'text' },
+          { key: 'footer.links.shop.1.text', label: 'Link 2 Text', type: 'text' }, { key: 'footer.links.shop.1.href', label: 'Link 2 URL', type: 'text' },
+          { key: 'footer.links.shop.2.text', label: 'Link 3 Text', type: 'text' }, { key: 'footer.links.shop.2.href', label: 'Link 3 URL', type: 'text' },
+          { key: 'footer.links.shop.3.text', label: 'Link 4 Text', type: 'text' }, { key: 'footer.links.shop.3.href', label: 'Link 4 URL', type: 'text' }
+        ]},
+        { title: 'Support Links', fields: [
+          { key: 'footer.links.support.0.text', label: 'Link 1 Text', type: 'text' }, { key: 'footer.links.support.0.href', label: 'Link 1 URL', type: 'text' },
+          { key: 'footer.links.support.1.text', label: 'Link 2 Text', type: 'text' }, { key: 'footer.links.support.1.href', label: 'Link 2 URL', type: 'text' },
+          { key: 'footer.links.support.2.text', label: 'Link 3 Text', type: 'text' }, { key: 'footer.links.support.2.href', label: 'Link 3 URL', type: 'text' }
+        ]},
+        { title: 'Legal Links', fields: [
+          { key: 'footer.links.legal.0.text', label: 'Link 1 Text', type: 'text' }, { key: 'footer.links.legal.0.href', label: 'Link 1 URL', type: 'text' },
+          { key: 'footer.links.legal.1.text', label: 'Link 2 Text', type: 'text' }, { key: 'footer.links.legal.1.href', label: 'Link 2 URL', type: 'text' },
+          { key: 'footer.links.legal.2.text', label: 'Link 3 Text', type: 'text' }, { key: 'footer.links.legal.2.href', label: 'Link 3 URL', type: 'text' }
+        ]}
+      ]
+    }
+  ];
+
+  function deepGet(obj, path) {
+    return path.split('.').reduce(function (o, k) {
+      return (o !== null && o !== undefined) ? o[k] : undefined;
+    }, obj);
+  }
+
+  function deepSet(obj, path, value) {
+    var keys = path.split('.');
+    var cur = obj;
+    for (var i = 0; i < keys.length - 1; i++) {
+      var k = keys[i];
+      var nextIsIndex = /^\d+$/.test(keys[i + 1]);
+      if (cur[k] === undefined || cur[k] === null) cur[k] = nextIsIndex ? [] : {};
+      cur = cur[k];
+    }
+    var last = keys[keys.length - 1];
+    if (Array.isArray(cur) && /^\d+$/.test(last)) {
+      cur[parseInt(last, 10)] = value;
+    } else {
+      cur[last] = value;
+    }
+  }
+
+  var style = document.createElement('style');
+  style.textContent = [
+    '#ss-edit-btn{position:fixed;bottom:24px;right:24px;z-index:9999;background:#4285F4;color:#fff;',
+    'border:none;border-radius:50px;padding:12px 20px;font-family:"Montserrat",sans-serif;font-size:1.3rem;',
+    'font-weight:700;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;',
+    'box-shadow:0 4px 20px rgba(66,133,244,.5);transition:all .2s;}',
+    '#ss-edit-btn:hover{background:#3373e3;transform:translateY(-2px);}',
+    '#ss-editor-overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:10000;',
+    'opacity:0;pointer-events:none;transition:opacity .3s;}',
+    '#ss-editor-overlay.open{opacity:1;pointer-events:auto;}',
+    '#ss-editor{position:fixed;top:0;right:0;bottom:0;width:520px;max-width:100vw;',
+    'background:#fff;z-index:10001;display:flex;flex-direction:column;',
+    'transform:translateX(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);',
+    'box-shadow:-8px 0 40px rgba(0,0,0,.18);}',
+    '#ss-editor.open{transform:translateX(0);}',
+    '#ss-ed-head{background:#0A1F3D;color:#fff;padding:16px 20px;display:flex;',
+    'align-items:center;justify-content:space-between;flex-shrink:0;}',
+    '#ss-ed-head h2{font-family:"Montserrat",sans-serif;font-size:1.4rem;font-weight:800;',
+    'letter-spacing:.1em;text-transform:uppercase;margin:0;}',
+    '#ss-ed-close{background:none;border:none;color:rgba(255,255,255,.7);font-size:2.4rem;',
+    'line-height:1;cursor:pointer;padding:0 4px;transition:color .2s;}',
+    '#ss-ed-close:hover{color:#fff;}',
+    '#ss-ed-tabs{display:flex;overflow-x:auto;border-bottom:2px solid #ebecf0;flex-shrink:0;',
+    'background:#f8f9fa;scrollbar-width:none;}',
+    '#ss-ed-tabs::-webkit-scrollbar{display:none;}',
+    '.ss-ed-tab{flex-shrink:0;padding:10px 16px;background:none;border:none;cursor:pointer;',
+    'font-family:"Montserrat",sans-serif;font-size:1.1rem;font-weight:600;letter-spacing:.06em;',
+    'text-transform:uppercase;color:#888;border-bottom:2px solid transparent;margin-bottom:-2px;',
+    'transition:all .2s;}',
+    '.ss-ed-tab:hover{color:#0A1F3D;}',
+    '.ss-ed-tab.active{color:#4285F4;border-bottom-color:#4285F4;}',
+    '#ss-ed-body{flex:1;overflow-y:auto;padding:20px;}',
+    '.ss-ed-section{margin-bottom:24px;}',
+    '.ss-ed-section-title{font-family:"Montserrat",sans-serif;font-size:1.1rem;font-weight:800;',
+    'letter-spacing:.1em;text-transform:uppercase;color:#0A1F3D;padding:8px 0 8px;',
+    'border-bottom:2px solid #4285F4;margin-bottom:14px;}',
+    '.ss-ed-field{margin-bottom:14px;}',
+    '.ss-ed-label{display:block;font-family:"Roboto Mono",monospace;font-size:1rem;font-weight:600;',
+    'letter-spacing:.1em;text-transform:uppercase;color:#555;margin-bottom:5px;}',
+    '.ss-ed-input,.ss-ed-textarea{width:100%;padding:9px 12px;border:1.5px solid #ddd;',
+    'border-radius:4px;font-family:"Montserrat",sans-serif;font-size:1.25rem;color:#0A1F3D;',
+    'outline:none;transition:border-color .2s;box-sizing:border-box;}',
+    '.ss-ed-input:focus,.ss-ed-textarea:focus{border-color:#4285F4;}',
+    '.ss-ed-textarea{min-height:80px;resize:vertical;line-height:1.5;}',
+    '.ss-ed-img-preview{width:100%;max-height:80px;object-fit:contain;margin-top:6px;',
+    'border:1px solid #eee;border-radius:4px;display:none;}',
+    '.ss-ed-img-preview.show{display:block;}',
+    '#ss-ed-foot{padding:14px 20px;border-top:1px solid #eee;display:flex;',
+    'align-items:center;justify-content:space-between;flex-shrink:0;gap:10px;}',
+    '#ss-save-status{font-family:"Roboto Mono",monospace;font-size:1.1rem;flex:1;}',
+    '#ss-save-btn{background:#4285F4;color:#fff;border:none;border-radius:4px;',
+    'padding:12px 28px;font-family:"Montserrat",sans-serif;font-size:1.2rem;font-weight:700;',
+    'letter-spacing:.08em;text-transform:uppercase;cursor:pointer;transition:background .2s;white-space:nowrap;}',
+    '#ss-save-btn:hover{background:#3373e3;}',
+    '#ss-save-btn:disabled{background:#aaa;cursor:default;}',
+    '#ss-cancel-btn{background:none;border:1.5px solid #ddd;border-radius:4px;',
+    'padding:12px 20px;font-family:"Montserrat",sans-serif;font-size:1.2rem;font-weight:600;',
+    'letter-spacing:.08em;text-transform:uppercase;cursor:pointer;color:#555;transition:all .2s;}',
+    '#ss-cancel-btn:hover{border-color:#0A1F3D;color:#0A1F3D;}'
+  ].join('');
+  document.head.appendChild(style);
+
+  var overlay = document.createElement('div');
+  overlay.id = 'ss-editor-overlay';
+  document.body.appendChild(overlay);
+
+  var panel = document.createElement('div');
+  panel.id = 'ss-editor';
+
+  var tabsHTML = SCHEMA.map(function (tab, i) {
+    return '<button class="ss-ed-tab' + (i === 0 ? ' active' : '') + '" data-tab="' + tab.id + '">' + tab.label + '</button>';
+  }).join('');
+
+  panel.innerHTML = [
+    '<div id="ss-ed-head">',
+      '<h2>Edit Site Content</h2>',
+      '<button id="ss-ed-close" aria-label="Close editor">&times;</button>',
+    '</div>',
+    '<div id="ss-ed-tabs">', tabsHTML, '</div>',
+    '<div id="ss-ed-body"></div>',
+    '<div id="ss-ed-foot">',
+      '<span id="ss-save-status"></span>',
+      '<button id="ss-cancel-btn">Cancel</button>',
+      '<button id="ss-save-btn">&#128190; Save Changes</button>',
+    '</div>'
+  ].join('');
+  document.body.appendChild(panel);
+
+  var openBtn = document.createElement('button');
+  openBtn.id = 'ss-edit-btn';
+  openBtn.textContent = '✏ Edit Site';
+  document.body.appendChild(openBtn);
+
+  var editCfg = {};
+  var activeTab = SCHEMA[0].id;
+  var debounceTimer = null;
+
+  function renderTab(tabId) {
+    activeTab = tabId;
+    var tab = SCHEMA.filter(function (t) { return t.id === tabId; })[0];
+    if (!tab) return;
+
+    var html = '';
+    tab.sections.forEach(function (section) {
+      html += '<div class="ss-ed-section"><div class="ss-ed-section-title">' + section.title + '</div>';
+      section.fields.forEach(function (field) {
+        var val = deepGet(editCfg, field.key);
+        if (val === undefined) val = '';
+        var safeVal = String(val).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+        var inputHTML = '';
+
+        if (field.type === 'textarea') {
+          inputHTML = '<textarea class="ss-ed-textarea" data-key="' + field.key + '">' + String(val).replace(/</g, '&lt;') + '</textarea>';
+        } else if (field.type === 'image') {
+          inputHTML = [
+            '<input class="ss-ed-input" type="text" data-key="' + field.key + '" value="' + safeVal + '" placeholder="Brand_assets/image.jpg" />',
+            '<img class="ss-ed-img-preview' + (val ? ' show' : '') + '" src="' + (val || '') + '" alt="preview" />'
+          ].join('');
+        } else if (field.type === 'number') {
+          inputHTML = '<input class="ss-ed-input" type="number" data-key="' + field.key + '" value="' + safeVal + '" />';
+        } else if (field.type === 'url') {
+          inputHTML = '<input class="ss-ed-input" type="text" data-key="' + field.key + '" value="' + safeVal + '" placeholder="https://" />';
+        } else {
+          inputHTML = '<input class="ss-ed-input" type="text" data-key="' + field.key + '" value="' + safeVal + '" />';
+        }
+
+        html += '<div class="ss-ed-field"><label class="ss-ed-label">' + field.label + '</label>' + inputHTML + '</div>';
+      });
+      html += '</div>';
+    });
+
+    document.getElementById('ss-ed-body').innerHTML = html;
+
+    document.querySelectorAll('#ss-ed-body [data-key]').forEach(function (input) {
+      input.addEventListener('input', function () {
+        var key = this.getAttribute('data-key');
+        var val = this.type === 'number' ? parseFloat(this.value) || 0 : this.value;
+        deepSet(editCfg, key, val);
+
+        if (this.tagName === 'INPUT' && this.nextElementSibling && this.nextElementSibling.classList.contains('ss-ed-img-preview')) {
+          var img = this.nextElementSibling;
+          img.src = this.value;
+          img.classList.toggle('show', !!this.value);
+        }
+
+        clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(function () {
+          if (window.populateFromConfig) window.populateFromConfig(editCfg);
+        }, 350);
+
+        setStatus('');
+      });
+    });
+  }
+
+  document.getElementById('ss-ed-tabs').addEventListener('click', function (e) {
+    var btn = e.target.closest('.ss-ed-tab');
+    if (!btn) return;
+    document.querySelectorAll('.ss-ed-tab').forEach(function (b) { b.classList.remove('active'); });
+    btn.classList.add('active');
+    renderTab(btn.getAttribute('data-tab'));
+  });
+
+  function openEditor() {
+    editCfg = JSON.parse(JSON.stringify(window.SITE_CONFIG || {}));
+    renderTab(activeTab);
+    document.querySelectorAll('.ss-ed-tab').forEach(function (b) {
+      b.classList.toggle('active', b.getAttribute('data-tab') === activeTab);
+    });
+    panel.classList.add('open');
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+    setStatus('');
+  }
+
+  function closeEditor() {
+    panel.classList.remove('open');
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+    if (window.SITE_CONFIG && window.populateFromConfig) {
+      window.populateFromConfig(window.SITE_CONFIG);
+    }
+  }
+
+  openBtn.addEventListener('click', openEditor);
+  overlay.addEventListener('click', closeEditor);
+  document.getElementById('ss-ed-close').addEventListener('click', closeEditor);
+  document.getElementById('ss-cancel-btn').addEventListener('click', closeEditor);
+
+  function setStatus(msg, isError) {
+    var el = document.getElementById('ss-save-status');
+    el.textContent = msg;
+    el.style.color = isError ? '#c0392b' : '#27ae60';
+  }
+
+  document.getElementById('ss-save-btn').addEventListener('click', function () {
+    var btn = this;
+    btn.disabled = true;
+    btn.textContent = 'Saving…';
+    setStatus('');
+
+    fetch('/api/save', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(editCfg)
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (data) {
+        if (data.ok) {
+          window.SITE_CONFIG = JSON.parse(JSON.stringify(editCfg));
+          if (window.populateFromConfig) window.populateFromConfig(window.SITE_CONFIG);
+          setStatus('✓ Saved successfully!');
+          btn.textContent = '✓ Saved!';
+          btn.style.background = '#27ae60';
+          setTimeout(function () {
+            btn.disabled = false;
+            btn.textContent = '💾 Save Changes';
+            btn.style.background = '';
+          }, 2500);
+        } else {
+          throw new Error(data.error || 'Save failed');
+        }
+      })
+      .catch(function (err) {
+        setStatus('✗ ' + (err.message || 'Could not save — is the server running?'), true);
+        btn.disabled = false;
+        btn.textContent = '💾 Save Changes';
+      });
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.altKey && e.key === 'e') {
+      if (panel.classList.contains('open')) closeEditor(); else openEditor();
+    }
+    if (e.key === 'Escape' && panel.classList.contains('open')) closeEditor();
+  });
+
+})();
+</script>
 <script>
 (function () {
   'use strict';
