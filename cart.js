@@ -4,14 +4,13 @@
 (function () {
   'use strict';
 
-  /* ── CONFIG: paste your credentials here ── */
+  /* ── CONFIG: edit via site-config.js or the Edit Site panel ── */
+  var _sc = window.SITE_CONFIG && window.SITE_CONFIG.cart;
   var CONFIG = {
-    /* 1. Create a product + payment link at dashboard.stripe.com → Payment Links */
-    stripePaymentLink: 'https://buy.stripe.com/REPLACE_WITH_YOUR_STRIPE_LINK',
-    /* 2. Find your Client ID at developer.paypal.com → Apps & Credentials */
-    paypalClientId: 'REPLACE_WITH_YOUR_PAYPAL_CLIENT_ID',
-    currency: 'AUD',
-    price:    189.99
+    stripePaymentLink: (_sc && _sc.stripePaymentLink) || 'https://buy.stripe.com/REPLACE_WITH_YOUR_STRIPE_LINK',
+    paypalClientId:    (_sc && _sc.paypalClientId)    || 'REPLACE_WITH_YOUR_PAYPAL_CLIENT_ID',
+    currency:          (_sc && _sc.currency)          || 'AUD',
+    price:             (_sc && _sc.price)             || 189.99
   };
 
   var CART_KEY = 'ss_cart_items';
@@ -119,6 +118,8 @@
 
   /* ── Render cart items ── */
   function productImg(color) {
+    var products = window.SITE_CONFIG && window.SITE_CONFIG.products;
+    if (products && products[color] && products[color].image) return products[color].image;
     return color === 'blue'
       ? 'Brand_assets/H90ec0ec1be46449ca5e40d7792b52ae0Y.avif'
       : 'Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg';
