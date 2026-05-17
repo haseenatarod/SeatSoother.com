@@ -83,7 +83,7 @@ ul { list-style: none; }
   height: 72px;
 }
 .nav-logo { display: flex; align-items: center; gap: 10px; min-width: 180px; }
-.nav-logo img { height: 47px; width: auto; animation: logo-glow 2.5s ease-in-out infinite; }
+.nav-logo img { height: 56px; width: auto; animation: logo-glow 2.5s ease-in-out infinite; }
 .nav-logo-text {
   font-family: var(--font);
   font-size: 1.55rem;
@@ -825,6 +825,10 @@ footer { background: var(--grey); border-top: 1px solid var(--border); padding: 
   html { font-size: 9px; }
   .nav-links { display: none; }
   .hamburger { display: flex; }
+  .nav-logo { min-width: unset; flex-shrink: 0; }
+  .nav-logo img { height: 44px; }
+  .nav-actions { min-width: unset; gap: 10px; }
+  .navbar-inner { padding: 0 16px; gap: 0; }
   .ann-bar { font-size: 1rem; padding: 8px 12px; line-height: 1.6; }
   .cd-banner { flex-wrap: wrap; gap: 8px; padding: 10px 16px; justify-content: center; }
   .cd-label { width: 100%; text-align: center; font-size: 1rem; }
@@ -858,7 +862,6 @@ footer { background: var(--grey); border-top: 1px solid var(--border); padding: 
   .footer-inner { padding: 0 20px; }
   .footer-bottom { flex-direction: column; align-items: flex-start; gap: 12px; }
   .container { padding: 0 20px; }
-  .navbar-inner { padding: 0 16px; }
   .sticky-cta { display: flex; }
   body { padding-bottom: 72px; }
   .shop-grid { grid-template-columns: 1fr; }
@@ -871,6 +874,8 @@ footer { background: var(--grey); border-top: 1px solid var(--border); padding: 
 }
 @media (max-width: 480px) {
   html { font-size: 8.5px; }
+  .nav-logo img { height: 38px; }
+  .navbar-inner { padding: 0 12px; }
   .hero-title { font-size: 3.6rem; }
   .cta-title { font-size: 3.2rem; }
   .hero-left { padding: 28px 16px 24px; }
@@ -878,7 +883,6 @@ footer { background: var(--grey); border-top: 1px solid var(--border); padding: 
   .hero-product-img { width: 85%; }
   .carousel-dots { bottom: 16px; }
   .ann-bar { font-size: .95rem; }
-  .navbar-inner { padding: 0 12px; }
   .container { padding: 0 16px; }
   .footer-inner { padding: 0 16px; }
   .cd-unit { font-size: 1.2rem; padding: 3px 7px; }
