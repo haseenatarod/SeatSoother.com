@@ -7,7 +7,11 @@
   <meta name="description" content="Shop SeatSoother — Medical-grade memory foam donut cushion for hemorrhoid relief, tailbone pain, and post-surgery recovery. Free shipping. 30-day guarantee." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <script>if (/[?&]p=(?!home(&|$))/.test(location.search)) document.documentElement.className += ' ss-sub';</script>
+  <link rel="preload" as="image" href="Brand_assets/opt/hero-1.webp" fetchpriority="high" />
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@400;500;600&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@400;500;600&display=swap" media="print" onload="this.media='all'" />
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800;900&family=Roboto+Mono:wght@400;500;600&display=swap" /></noscript>
   <style>
 /* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -553,7 +557,7 @@ footer { background: var(--grey); border-top: 1px solid var(--border); padding: 
 .footer-inner { max-width: 1240px; margin: 0 auto; padding: 0 52px; }
 .footer-grid { display: grid; grid-template-columns: 2.2fr 1fr 1fr 1fr; gap: 52px; margin-bottom: 52px; }
 .footer-logo { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
-.footer-logo img { height: 42px; animation: logo-glow 2.5s ease-in-out infinite; }
+.footer-logo img { height: 42px; width: auto; animation: logo-glow 2.5s ease-in-out infinite; }
 .footer-logo-text { font-size: 1.5rem; font-weight: 800; letter-spacing: .2em; text-transform: uppercase; color: var(--dark-blue); }
 .footer-desc { font-size: 1.25rem; color: var(--muted); line-height: 1.75; max-width: 260px; margin-bottom: 18px; }
 .footer-email { font-family: var(--mono); font-size: 1.2rem; color: var(--blue); }
@@ -1020,6 +1024,7 @@ footer { background: var(--grey); border-top: 1px solid var(--border); padding: 
 
 /* ── SPA ── */
 .spa-page { display: none; }
+html:not(.ss-sub) #page-home { display: block; }
 
 /* ── THANK-YOU PAGE ── */
 .ty-section {
@@ -1079,7 +1084,7 @@ window.SITE_CONFIG = {
                  "title":  "Sit Freely.\nHeal Faster.\nEvery Seat.",
                  "ctaText":  "Shop Now",
                  "ctaLink":  "#collection",
-                 "image":  "Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg",
+                 "image":  "Brand_assets/opt/product-black.webp",
                  "imageAlt":  "SeatSoother Donut Cushion"
              },
     "stickyCta":  {
@@ -1095,7 +1100,7 @@ window.SITE_CONFIG = {
                      "black":  {
                                    "shortName":  "Classic Black",
                                    "eyebrow":  "Premium Donut Cushion",
-                                   "image":  "Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg",
+                                   "image":  "Brand_assets/opt/product-black.webp",
                                    "imageAlt":  "SeatSoother — Classic Black",
                                    "badge":  "-30%",
                                    "priceNow":  "$189.99",
@@ -1108,7 +1113,7 @@ window.SITE_CONFIG = {
                      "blue":  {
                                   "shortName":  "Navy Blue",
                                   "eyebrow":  "Premium Donut Cushion",
-                                  "image":  "Brand_assets/H90ec0ec1be46449ca5e40d7792b52ae0Y.avif",
+                                  "image":  "Brand_assets/opt/product-navy.webp",
                                   "imageAlt":  "SeatSoother — Navy Blue",
                                   "badge":  "-30%",
                                   "priceNow":  "$189.99",
@@ -1137,16 +1142,16 @@ window.SITE_CONFIG = {
                                            "Doctor recommended for post-surgery recovery"
                                        ],
                           "gallery":  [
-                                          "Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg",
-                                          "Brand_assets/H5926658fc38641ecadee5d9f7dc032dbR.jpg",
-                                          "Brand_assets/H172309b87342480e95aac12817264e25z.jpg",
-                                          "Brand_assets/54.png"
+                                          "Brand_assets/opt/product-black.webp",
+                                          "Brand_assets/opt/anatomy.webp",
+                                          "Brand_assets/opt/in-use.webp",
+                                          "Brand_assets/opt/usage-diagram.webp"
                                       ]
                       },
     "anatomy":  {
                     "eyebrow":  "Engineering Breakdown",
                     "title":  "Built for Precision Relief.",
-                    "image":  "Brand_assets/H5926658fc38641ecadee5d9f7dc032dbR.jpg",
+                    "image":  "Brand_assets/opt/anatomy.webp",
                     "imageAlt":  "SeatSoother anatomy diagram",
                     "features":  [
                                      {
@@ -1174,7 +1179,7 @@ window.SITE_CONFIG = {
     "useCases":  {
                      "eyebrow":  "Every Situation",
                      "title":  "One Cushion.\nEvery Seat.",
-                     "image":  "Brand_assets/H172309b87342480e95aac12817264e25z.jpg",
+                     "image":  "Brand_assets/opt/in-use.webp",
                      "imageAlt":  "SeatSoother in use — car seat, sofa, office chair",
                      "caption":  "Works on every surface — car, sofa, office",
                      "tag":  "Universal Fit",
@@ -1199,7 +1204,7 @@ window.SITE_CONFIG = {
     "howTo":  {
                   "eyebrow":  "Correct Usage",
                   "title":  "Use It Right.\nFeel It Work.",
-                  "image":  "Brand_assets/54.png",
+                  "image":  "Brand_assets/opt/usage-diagram.webp",
                   "imageAlt":  "SeatSoother correct use diagram",
                   "steps":  [
                                 {
@@ -1329,7 +1334,7 @@ window.SITE_CONFIG = {
 <nav class="navbar">
   <div class="navbar-inner">
     <a href="index.html" class="nav-logo">
-      <img src="Brand_assets/Logo final.png" alt="SeatSoother" />
+      <img src="Brand_assets/opt/logo.webp" alt="SeatSoother" width="128" height="168" decoding="async" loading="lazy" />
     </a>
     <ul class="nav-links">
       <li><a href="index.html" class="active">Home</a></li>
@@ -1381,22 +1386,22 @@ window.SITE_CONFIG = {
 
     <div class="carousel-slides">
       <div class="carousel-slide active">
-        <img src="Brand_assets/carousel 1.jpg" alt="SeatSoother lifestyle" loading="eager" />
+        <img src="Brand_assets/opt/hero-1.webp" alt="SeatSoother lifestyle" width="489" height="383" fetchpriority="high" decoding="async" />
       </div>
       <div class="carousel-slide">
-        <img src="Brand_assets/carousel 2.jpg" alt="SeatSoother comfort" loading="lazy" />
+        <img data-src="Brand_assets/opt/hero-2.webp" data-srcset="Brand_assets/opt/hero-2-sm.webp 640w, Brand_assets/opt/hero-2.webp 1200w" sizes="100vw" alt="SeatSoother comfort" loading="lazy" decoding="async" />
       </div>
       <div class="carousel-slide">
-        <img src="Brand_assets/carousel 3.png" alt="SeatSoother relief" loading="lazy" />
+        <img data-src="Brand_assets/opt/hero-3.webp" data-srcset="Brand_assets/opt/hero-3-sm.webp 640w, Brand_assets/opt/hero-3.webp 1200w" sizes="100vw" alt="SeatSoother relief" loading="lazy" decoding="async" />
       </div>
       <div class="carousel-slide">
-        <img src="Brand_assets/carousel 5.webp" alt="SeatSoother in use" loading="lazy" />
+        <img data-src="Brand_assets/opt/hero-5.webp" data-srcset="Brand_assets/opt/hero-5-sm.webp 640w, Brand_assets/opt/hero-5.webp 1200w" sizes="100vw" alt="SeatSoother in use" loading="lazy" decoding="async" />
       </div>
       <div class="carousel-slide">
-        <img src="Brand_assets/carousel 8.avif" alt="SeatSoother cushion" loading="lazy" />
+        <img data-src="Brand_assets/opt/hero-8.webp" data-srcset="Brand_assets/opt/hero-8-sm.webp 640w, Brand_assets/opt/hero-8.webp 1200w" sizes="100vw" alt="SeatSoother cushion" loading="lazy" decoding="async" />
       </div>
       <div class="carousel-slide">
-        <img src="Brand_assets/carousel 11.jpg" alt="SeatSoother healing" loading="lazy" />
+        <img data-src="Brand_assets/opt/hero-11.webp" data-srcset="Brand_assets/opt/hero-11-sm.webp 640w, Brand_assets/opt/hero-11.webp 1200w" sizes="100vw" alt="SeatSoother healing" loading="lazy" decoding="async" />
       </div>
     </div>
 
@@ -1460,7 +1465,7 @@ window.SITE_CONFIG = {
         <!-- BLACK -->
         <a href="product.html?color=black" class="coll-card fade-up">
           <div class="coll-card-img">
-            <img src="Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg" alt="SeatSoother — Classic Black" />
+            <img src="Brand_assets/opt/product-black.webp" alt="SeatSoother — Classic Black" loading="lazy" decoding="async" />
             <span class="coll-badge">-30%</span>
           </div>
           <div class="coll-card-body">
@@ -1483,7 +1488,7 @@ window.SITE_CONFIG = {
         <!-- BLUE -->
         <a href="product.html?color=blue" class="coll-card fade-up">
           <div class="coll-card-img">
-            <img src="Brand_assets/H90ec0ec1be46449ca5e40d7792b52ae0Y.avif" alt="SeatSoother — Navy Blue" />
+            <img src="Brand_assets/opt/product-navy.webp" alt="SeatSoother — Navy Blue" loading="lazy" decoding="async" />
             <span class="coll-badge">-30%</span>
           </div>
           <div class="coll-card-body">
@@ -1612,20 +1617,20 @@ window.SITE_CONFIG = {
         <!-- GALLERY -->
         <div class="product-gallery fade-up">
           <div class="product-main-img">
-            <img id="mainProductImg" src="Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg" alt="SeatSoother Donut Cushion" />
+            <img id="mainProductImg" src="Brand_assets/opt/product-black.webp" alt="SeatSoother Donut Cushion" />
           </div>
           <div class="product-thumbs">
-            <div class="product-thumb active" data-src="Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg" id="thumb0Wrap">
-              <img id="thumb0" src="Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg" alt="Product" />
+            <div class="product-thumb active" data-src="Brand_assets/opt/product-black.webp" id="thumb0Wrap">
+              <img id="thumb0" src="Brand_assets/opt/product-black-sm.webp" alt="Product" />
             </div>
-            <div class="product-thumb" data-src="Brand_assets/H5926658fc38641ecadee5d9f7dc032dbR.jpg">
-              <img src="Brand_assets/H5926658fc38641ecadee5d9f7dc032dbR.jpg" alt="Anatomy view" />
+            <div class="product-thumb" data-src="Brand_assets/opt/anatomy.webp">
+              <img src="Brand_assets/opt/anatomy-sm.webp" alt="Anatomy view" loading="lazy" decoding="async" />
             </div>
-            <div class="product-thumb" data-src="Brand_assets/H172309b87342480e95aac12817264e25z.jpg">
-              <img src="Brand_assets/H172309b87342480e95aac12817264e25z.jpg" alt="In use" />
+            <div class="product-thumb" data-src="Brand_assets/opt/in-use.webp">
+              <img src="Brand_assets/opt/in-use-sm.webp" alt="In use" loading="lazy" decoding="async" />
             </div>
-            <div class="product-thumb" data-src="Brand_assets/54.png">
-              <img src="Brand_assets/54.png" alt="Usage diagram" />
+            <div class="product-thumb" data-src="Brand_assets/opt/usage-diagram.webp">
+              <img src="Brand_assets/opt/usage-diagram-sm.webp" alt="Usage diagram" loading="lazy" decoding="async" />
             </div>
           </div>
         </div>
@@ -1728,7 +1733,7 @@ window.SITE_CONFIG = {
       </div>
       <div class="anatomy-grid">
         <div class="anatomy-img-wrap fade-up">
-          <img src="Brand_assets/H5926658fc38641ecadee5d9f7dc032dbR.jpg" alt="SeatSoother anatomy diagram" />
+          <img src="Brand_assets/opt/anatomy.webp" alt="SeatSoother anatomy diagram" loading="lazy" decoding="async" />
         </div>
         <div class="anatomy-features fade-up">
           <div class="anat-feat">
@@ -1762,7 +1767,7 @@ window.SITE_CONFIG = {
         <h2 class="section-title">One Cushion.<br /><span>Every Seat.</span></h2>
       </div>
       <div class="use-cases-img-wrap fade-up">
-        <img src="Brand_assets/H172309b87342480e95aac12817264e25z.jpg" alt="SeatSoother in use — car seat, sofa, office chair" />
+        <img src="Brand_assets/opt/in-use.webp" alt="SeatSoother in use — car seat, sofa, office chair" loading="lazy" decoding="async" />
         <div class="use-cases-caption">
           <p>Works on every surface — car, sofa, office</p>
           <span class="use-tag">Universal Fit</span>
@@ -1799,7 +1804,7 @@ window.SITE_CONFIG = {
       </div>
       <div class="how-grid">
         <div class="how-img-wrap fade-up">
-          <img src="Brand_assets/54.png" alt="SeatSoother correct use diagram" />
+          <img src="Brand_assets/opt/usage-diagram.webp" alt="SeatSoother correct use diagram" loading="lazy" decoding="async" />
         </div>
         <div class="fade-up">
           <div class="how-steps">
@@ -1970,7 +1975,7 @@ window.SITE_CONFIG = {
     <div class="footer-grid">
       <div>
         <div class="footer-logo">
-          <img src="Brand_assets/Logo final.png" alt="SeatSoother" />
+          <img src="Brand_assets/opt/logo.webp" alt="SeatSoother" width="128" height="168" loading="lazy" decoding="async" />
         </div>
         <p class="footer-desc">Premium donut comfort cushions for hemorrhoid relief, tailbone pain, and post-surgery recovery.</p>
         <a href="mailto:contact@seatsoothers.com" class="footer-email">&#9993;&nbsp; contact@seatsoothers.com</a>
@@ -2162,8 +2167,8 @@ window.SITE_CONFIG = {
     var products = window.SITE_CONFIG && window.SITE_CONFIG.products;
     if (products && products[color] && products[color].image) return products[color].image;
     return color === 'blue'
-      ? 'Brand_assets/H90ec0ec1be46449ca5e40d7792b52ae0Y.avif'
-      : 'Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg';
+      ? 'Brand_assets/opt/product-navy.webp'
+      : 'Brand_assets/opt/product-black.webp';
   }
 
   function renderItems() {
@@ -3367,8 +3372,8 @@ window.SITE_CONFIG = {
       blue:  { label: p.blue.shortName,  img: p.blue.image,  alt: p.blue.imageAlt,  cartName: p.blue.cartName  }
     };
     return {
-      black: { label: 'Classic Black', img: 'Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg',  alt: 'SeatSoother — Classic Black', cartName: 'SeatSoother Classic Black' },
-      blue:  { label: 'Navy Blue',     img: 'Brand_assets/H90ec0ec1be46449ca5e40d7792b52ae0Y.avif', alt: 'SeatSoother — Navy Blue',    cartName: 'SeatSoother Navy Blue'    }
+      black: { label: 'Classic Black', img: 'Brand_assets/opt/product-black.webp',  alt: 'SeatSoother — Classic Black', cartName: 'SeatSoother Classic Black' },
+      blue:  { label: 'Navy Blue',     img: 'Brand_assets/opt/product-navy.webp', alt: 'SeatSoother — Navy Blue',    cartName: 'SeatSoother Navy Blue'    }
     };
   }
   var currentColor    = 'black';
@@ -3557,7 +3562,17 @@ window.SITE_CONFIG = {
     });
   }
 
-  removeLogoBg();
+
+
+  /* Load remaining hero slides only after the page has finished loading */
+  function loadHeroSlides() {
+    document.querySelectorAll('.carousel-slide img[data-src]').forEach(function (img) {
+      img.srcset = img.dataset.srcset; img.src = img.dataset.src;
+      img.removeAttribute('data-src'); img.removeAttribute('data-srcset');
+    });
+  }
+  if (document.readyState === 'complete') loadHeroSlides();
+  else window.addEventListener('load', function () { setTimeout(loadHeroSlides, 300); }, { once: true });
 
   /* ══════════════════════════════════════════
      HERO CAROUSEL

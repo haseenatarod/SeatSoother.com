@@ -121,8 +121,8 @@
     var products = window.SITE_CONFIG && window.SITE_CONFIG.products;
     if (products && products[color] && products[color].image) return products[color].image;
     return color === 'blue'
-      ? 'Brand_assets/H90ec0ec1be46449ca5e40d7792b52ae0Y.avif'
-      : 'Brand_assets/H51704bd836974f58a15858bb623bf6bb6.jpg';
+      ? 'Brand_assets/opt/product-navy.webp'
+      : 'Brand_assets/opt/product-black.webp';
   }
 
   function renderItems() {
